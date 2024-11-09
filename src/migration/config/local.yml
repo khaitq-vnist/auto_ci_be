@@ -1,0 +1,11 @@
+app:
+  datasource:
+    driver: postgres
+    host: localhost
+    port: 5432
+    database: auto_ci_service_db
+    username: user_auto_ci_db
+    password: secret
+    migrationSource: file://migrations
+  logging:
+    development: true

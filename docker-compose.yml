@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  auto-ci-db:
+    image: postgres:latest
+    container_name: auto_ci_db
+    environment:
+      POSTGRES_USER: user_auto_ci_db
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: auto_ci_service_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./docker/postgres/init-database-test.sql:/docker-entrypoint-initdb.d/init-database-test.sql
+
+  auto-ci-redis:
+    container_name: auto_ci_redis
+    image: redis:5.0.6
+    ports:
+      - "6379:6379"
