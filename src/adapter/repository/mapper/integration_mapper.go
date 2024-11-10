@@ -21,3 +21,29 @@ func ToIntegrationModel(integrationEntity *entity.IntegrationEntity) *model2.Int
 		ProviderUsername: integrationEntity.ProviderUsername,
 	}
 }
+func ToIntegrationEntity(integrationModel *model2.IntegrationModel) *entity.IntegrationEntity {
+	if integrationModel == nil {
+		return nil
+	}
+	return &entity.IntegrationEntity{
+		BaseEntity: entity.BaseEntity{
+			ID: integrationModel.ID,
+		},
+		Name:             integrationModel.Name,
+		UserId:           integrationModel.UserId,
+		ProviderId:       integrationModel.ProviderId,
+		ProviderName:     integrationModel.ProviderName,
+		AccessToken:      integrationModel.AccessToken,
+		ProviderUsername: integrationModel.ProviderUsername,
+	}
+}
+func ToListIntegrationEntities(integrationModels []*model2.IntegrationModel) []*entity.IntegrationEntity {
+	if integrationModels == nil {
+		return nil
+	}
+	var integrationEntities []*entity.IntegrationEntity
+	for _, integrationModel := range integrationModels {
+		integrationEntities = append(integrationEntities, ToIntegrationEntity(integrationModel))
+	}
+	return integrationEntities
+}

@@ -6,6 +6,7 @@ type IntegrationEntity struct {
 	UserId           int64
 	ProviderId       int64
 	ProviderName     string
+	ProviderCode     string
 	AccessToken      string
 	ProviderUsername string
 }

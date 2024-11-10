@@ -1,0 +1,9 @@
+app:
+  path: /auto-ci-service
+  name: AutoCI Public Service
+  security:
+    http:
+      publicUrls:
+        - /actuator/health
+        - /actuator/info
+        - /v1/integrations

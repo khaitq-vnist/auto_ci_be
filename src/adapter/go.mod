@@ -1,6 +1,6 @@
 module github.com/khaitq-vnist/auto_ci_be/adapter
 
-go 1.23.2
+go 1.21.0
 
 replace github.com/khaitq-vnist/auto_ci_be/core => ../core
 

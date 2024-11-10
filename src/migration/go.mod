@@ -1,6 +1,6 @@
 module github.com/khaitq-vnist/auto_ci_be/migration
 
-go 1.23.2
+go 1.21.0
 
 require (
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
