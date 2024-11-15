@@ -9,12 +9,13 @@ import (
 	"github.com/khaitq-vnist/auto_ci_be/adapter/http/client/dto/response"
 	"github.com/khaitq-vnist/auto_ci_be/adapter/http/strategy"
 	"github.com/khaitq-vnist/auto_ci_be/adapter/properties"
-	"github.com/khaitq-vnist/auto_ci_be/core/entity/dto"
+	response2 "github.com/khaitq-vnist/auto_ci_be/core/entity/dto/response"
 )
 
 const (
-	PathToGetUser  = "/user"
-	PathToGetRepos = "/users/%s/repos"
+	PathToGetUser     = "/user"
+	PathToGetRepos    = "/users/%s/repos"
+	PathGetDetailRepo = "/repositories/%d"
 )
 
 type GithubProviderClient struct {
@@ -22,7 +23,22 @@ type GithubProviderClient struct {
 	props      *properties.GithubProperties
 }
 
-func (g *GithubProviderClient) GetListRepositoriesByUser(ctx *context.Context, token, username string) ([]*dto.ThirdPartyProviderReposResponse, error) {
+func (g *GithubProviderClient) GetRepositoryInfo(ctx *context.Context, token string, repoId int64) (*response2.ThirdPartyProviderReposResponse, error) {
+	var repo response.GithubRepoInfo
+	rsp, err := g.httpClient.Get(*ctx, g.props.BaseUrl+fmt.Sprintf(PathGetDetailRepo, repoId), &repo, client.WithHeader("Authorization", "Bearer "+token),
+		client.WithHeader("Accept", "application/vnd.github+json"))
+	if err != nil {
+		log.Error(ctx, "Error when get repo info from github", err)
+		return nil, err
+	}
+	if rsp.StatusCode != 200 || &repo == nil {
+		log.Error(ctx, "Error when get repo info from github", err)
+		return nil, errors.New("error when get repo info from github")
+	}
+	return response.ToThirdPartyProviderRepoResponse(&repo), nil
+}
+
+func (g *GithubProviderClient) GetListRepositoriesByUser(ctx *context.Context, token, username string) ([]*response2.ThirdPartyProviderReposResponse, error) {
 	var repos []*response.GithubRepoInfo
 	rsp, err := g.httpClient.Get(*ctx, g.props.BaseUrl+fmt.Sprintf(PathToGetRepos, username), &repos,
 		client.WithHeader("Authorization", "Bearer "+token),
@@ -36,10 +52,10 @@ func (g *GithubProviderClient) GetListRepositoriesByUser(ctx *context.Context, t
 		log.Error(ctx, "Error when get list repos from github", err)
 		return nil, errors.New("error when get list repos from github")
 	}
-	return response.ToThirdPartyProviderProjectResponse(repos), nil
+	return response.ToListThirdPartyProviderRepoResponse(repos), nil
 }
 
-func (g *GithubProviderClient) GetUserInfo(ctx *context.Context, token string) (*dto.ThirdPartyProviderUserInfoResponse, error) {
+func (g *GithubProviderClient) GetUserInfo(ctx *context.Context, token string) (*response2.ThirdPartyProviderUserInfoResponse, error) {
 	var userInfoResp response.GithubUserInfoResponse
 	rsp, err := g.httpClient.Get(*ctx, g.props.BaseUrl+PathToGetUser, &userInfoResp,
 		client.WithHeader("Authorization", "Bearer "+token))

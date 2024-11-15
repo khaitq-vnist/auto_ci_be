@@ -6,7 +6,7 @@ import (
 	"github.com/golibs-starter/golib/log"
 	"github.com/khaitq-vnist/auto_ci_be/adapter/http/strategy"
 	"github.com/khaitq-vnist/auto_ci_be/core/constanst"
-	"github.com/khaitq-vnist/auto_ci_be/core/entity/dto"
+	"github.com/khaitq-vnist/auto_ci_be/core/entity/dto/response"
 	"github.com/khaitq-vnist/auto_ci_be/core/port"
 )
 
@@ -14,7 +14,21 @@ type ThirdPartyProviderAdapter struct {
 	strategies map[string]strategy.IThirdPartyStrategy
 }
 
-func (t *ThirdPartyProviderAdapter) GetListRepositoriesByUser(ctx *context.Context, provider string, token, username string) ([]*dto.ThirdPartyProviderReposResponse, error) {
+func (t *ThirdPartyProviderAdapter) GetRepositoryInfo(ctx *context.Context, provider string, token string, repoId int64) (*response.ThirdPartyProviderReposResponse, error) {
+	partyStrategy := t.getStrategy(provider)
+	if partyStrategy == nil {
+		log.Error(ctx, "Provider not found", nil)
+		return nil, errors.New("provider not found")
+	}
+	repo, err := partyStrategy.GetRepositoryInfo(ctx, token, repoId)
+	if err != nil {
+		log.Error(ctx, "Error when get repository info from third party provider", err)
+		return nil, err
+	}
+	return repo, nil
+}
+
+func (t *ThirdPartyProviderAdapter) GetListRepositoriesByUser(ctx *context.Context, provider string, token, username string) ([]*response.ThirdPartyProviderReposResponse, error) {
 	partyStrategy := t.getStrategy(provider)
 	if partyStrategy == nil {
 		log.Error(ctx, "Provider not found", nil)
@@ -28,7 +42,7 @@ func (t *ThirdPartyProviderAdapter) GetListRepositoriesByUser(ctx *context.Conte
 	return repos, nil
 }
 
-func (t *ThirdPartyProviderAdapter) GetUserInfo(ctx *context.Context, provider string, token string) (*dto.ThirdPartyProviderUserInfoResponse, error) {
+func (t *ThirdPartyProviderAdapter) GetUserInfo(ctx *context.Context, provider string, token string) (*response.ThirdPartyProviderUserInfoResponse, error) {
 	partyStrategy := t.getStrategy(provider)
 	if partyStrategy == nil {
 		log.Error(ctx, "Provider not found", nil)

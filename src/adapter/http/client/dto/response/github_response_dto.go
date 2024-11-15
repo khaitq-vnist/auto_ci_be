@@ -1,7 +1,7 @@
 package response
 
 import (
-	"github.com/khaitq-vnist/auto_ci_be/core/entity/dto"
+	"github.com/khaitq-vnist/auto_ci_be/core/entity/dto/response"
 	"time"
 )
 
@@ -52,18 +52,30 @@ type GithubRepoInfo struct {
 	UpdatedAt   time.Time `json:"updated_at"`
 }
 
-func (u *GithubUserInfoResponse) ToUserInfo() *dto.ThirdPartyProviderUserInfoResponse {
-	return &dto.ThirdPartyProviderUserInfoResponse{
+func (u *GithubUserInfoResponse) ToUserInfo() *response.ThirdPartyProviderUserInfoResponse {
+	return &response.ThirdPartyProviderUserInfoResponse{
 		Username: u.Login,
 		Name:     u.Name,
 		Company:  u.Company,
 		Email:    u.Email,
 	}
 }
-func ToThirdPartyProviderProjectResponse(repos []*GithubRepoInfo) []*dto.ThirdPartyProviderReposResponse {
-	var result []*dto.ThirdPartyProviderReposResponse
+func ToThirdPartyProviderRepoResponse(repo *GithubRepoInfo) *response.ThirdPartyProviderReposResponse {
+	return &response.ThirdPartyProviderReposResponse{
+		ID:          repo.ID,
+		Name:        repo.Name,
+		Private:     repo.Private,
+		FullName:    repo.FullName,
+		Description: repo.Description,
+		HtmlUrl:     repo.HtmlUrl,
+		CreateAt:    repo.CreateAt.Unix(),
+		UpdatedAt:   repo.UpdatedAt.Unix(),
+	}
+}
+func ToListThirdPartyProviderRepoResponse(repos []*GithubRepoInfo) []*response.ThirdPartyProviderReposResponse {
+	var result []*response.ThirdPartyProviderReposResponse
 	for _, repo := range repos {
-		result = append(result, &dto.ThirdPartyProviderReposResponse{
+		result = append(result, &response.ThirdPartyProviderReposResponse{
 			ID:        repo.ID,
 			Name:      repo.Name,
 			Private:   repo.Private,

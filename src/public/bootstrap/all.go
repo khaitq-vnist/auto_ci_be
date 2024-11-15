@@ -49,6 +49,7 @@ func All() fx.Option {
 		fx.Provide(postgres.NewProviderRepositoryAdapter),
 		fx.Provide(postgres.NewIntegrationRepositoryAdapter),
 		fx.Provide(client.NewThirdPartyProviderAdapter),
+		fx.Provide(postgres.NewProjectRepositoryAdapter),
 
 		//Provide client's implements
 		fx.Provide(client.NewGithubProviderClient),
@@ -60,14 +61,18 @@ func All() fx.Option {
 		fx.Provide(usecase.NewGetProviderUseCase),
 		fx.Provide(usecase.NewGetIntegrationUseCase),
 		fx.Provide(usecase.NewGetRepositoryUseCase),
+		fx.Provide(usecase.NewGetProjectUseCase),
+		fx.Provide(usecase.NewCreateProjectUseCase),
 
 		//Provide service
 		fx.Provide(service.NewIntegrationService),
 		fx.Provide(service.NewRepositoryService),
+		fx.Provide(service.NewProjectService),
 
 		//Provide controller
 		fx.Provide(controller.NewIntegrationController),
 		fx.Provide(controller.NewRepositoryController),
+		fx.Provide(controller.NewProjectController),
 
 		// Provide gin http server auto config,
 		// actuator endpoints and application routers

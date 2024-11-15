@@ -1,6 +1,8 @@
 package response
 
-import "github.com/khaitq-vnist/auto_ci_be/core/entity/dto"
+import (
+	"github.com/khaitq-vnist/auto_ci_be/core/entity/dto/response"
+)
 
 type ReposResponse struct {
 	ID        int64  `json:"id"`
@@ -11,7 +13,7 @@ type ReposResponse struct {
 	UpdatedAt int64  `json:"updated_at"`
 }
 
-func ToListReposResponse(repos []*dto.ThirdPartyProviderReposResponse) []*ReposResponse {
+func ToListReposResponse(repos []*response.ThirdPartyProviderReposResponse) []*ReposResponse {
 	var response []*ReposResponse
 	for _, repo := range repos {
 		response = append(response, &ReposResponse{

@@ -17,6 +17,7 @@ type RegisterRoutersIn struct {
 	Actuator              *actuator.Endpoint
 	IntegrationController *controller.IntegrationController
 	RepositoryController  *controller.RepositoryController
+	ProjectController     *controller.ProjectController
 }
 
 func RegisterGinRouters(p RegisterRoutersIn) {
@@ -50,5 +51,10 @@ func RegisterGinRouters(p RegisterRoutersIn) {
 	v1RepositoryGroup := group.Group("/v1/repositories")
 	{
 		v1RepositoryGroup.GET("/integration/:integrationId", p.RepositoryController.GetRepositoriesByIntegrationId)
+	}
+	v1ProjectGroup := group.Group("/v1/projects")
+	{
+		v1ProjectGroup.GET("", p.ProjectController.GetProjectList)
+		v1ProjectGroup.POST("", p.ProjectController.CreateProject)
 	}
 }

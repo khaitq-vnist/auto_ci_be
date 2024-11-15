@@ -37,3 +37,11 @@ func ToProjectEntity(project *model.ProjectModel) *entity.ProjectEntity {
 		Description: project.Description,
 	}
 }
+
+func ToListProjectEntities(projectModels []*model.ProjectModel) []*entity.ProjectEntity {
+	var projectEntities []*entity.ProjectEntity
+	for _, projectModel := range projectModels {
+		projectEntities = append(projectEntities, ToProjectEntity(projectModel))
+	}
+	return projectEntities
+}
