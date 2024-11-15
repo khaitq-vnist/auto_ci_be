@@ -6,3 +6,12 @@ type ThirdPartyProviderUserInfoResponse struct {
 	Company  string
 	Email    string
 }
+
+type ThirdPartyProviderReposResponse struct {
+	ID        int64
+	Name      string
+	Private   bool
+	FullName  string
+	CreateAt  int64
+	UpdatedAt int64
+}

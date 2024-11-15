@@ -12,6 +12,14 @@ type IntegrationRepositoryAdapter struct {
 	*BaseRepository
 }
 
+func (i *IntegrationRepositoryAdapter) GetIntegrationByIdAndUserId(ctx *context.Context, integrationId, userId int64) (*entity.IntegrationEntity, error) {
+	var integrationModel model.IntegrationModel
+	if err := i.db.WithContext(*ctx).Model(&model.IntegrationModel{}).Where("id = ? AND user_id = ?", integrationId, userId).First(&integrationModel).Error; err != nil {
+		return nil, err
+	}
+	return mapper.ToIntegrationEntity(&integrationModel), nil
+}
+
 func (i *IntegrationRepositoryAdapter) GetIntegrationByUserId(ctx *context.Context, userId int64) ([]*entity.IntegrationEntity, error) {
 	var integrationModels []*model.IntegrationModel
 	if err := i.db.WithContext(*ctx).Model(&model.IntegrationModel{}).Where("user_id = ?", userId).Find(&integrationModels).Error; err != nil {

@@ -16,20 +16,27 @@ type RegisterRoutersIn struct {
 	Engine                *gin.Engine
 	Actuator              *actuator.Endpoint
 	IntegrationController *controller.IntegrationController
+	RepositoryController  *controller.RepositoryController
 }
 
 func RegisterGinRouters(p RegisterRoutersIn) {
 	p.Engine.Use(
 		cors.New(cors.Config{
-			AllowOrigins:     []string{"http://localhost:3000"},
-			AllowMethods:     []string{"PUT", "PATCH", "GET", "POST", "DELETE"},
-			AllowHeaders:     []string{"Origin"},
+			AllowOrigins: []string{"http://localhost:3000"},
+			AllowMethods: []string{"PUT", "PATCH", "GET", "POST", "DELETE", "OPTIONS"},
+			AllowHeaders: []string{
+				"Origin",
+				"Content-Type",
+				"Accept",
+				"User-Agent",
+				"Referer",
+				"sec-ch-ua",
+				"sec-ch-ua-platform",
+				"sec-ch-ua-mobile",
+			},
 			ExposeHeaders:    []string{"Content-Length", "Content-Type"},
 			AllowCredentials: true,
-			AllowOriginFunc: func(origin string) bool {
-				return origin == "https://github.com"
-			},
-			MaxAge: 12 * time.Hour,
+			MaxAge:           12 * time.Hour,
 		}))
 	group := p.Engine.Group(p.App.Path())
 	group.GET("/actuator/health", gin.WrapF(p.Actuator.Health))
@@ -40,5 +47,8 @@ func RegisterGinRouters(p RegisterRoutersIn) {
 		v1IntegrationGroup.POST("", p.IntegrationController.CreateIntegration)
 		v1IntegrationGroup.GET("", p.IntegrationController.GetIntegration)
 	}
-
+	v1RepositoryGroup := group.Group("/v1/repositories")
+	{
+		v1RepositoryGroup.GET("/integration/:integrationId", p.RepositoryController.GetRepositoriesByIntegrationId)
+	}
 }

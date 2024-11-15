@@ -39,7 +39,7 @@ func (c *CreateIntegrationUseCase) CreateIntegration(ctx *context.Context, integ
 	}
 
 	integrationEntity.AccessToken = encryptToken
-	integrationEntity.ProviderName = provider.Name
+	integrationEntity.ProviderName = provider.Code
 	integrationEntity.ProviderId = provider.ID
 	integrationEntity.ProviderUsername = userInfo.Username
 

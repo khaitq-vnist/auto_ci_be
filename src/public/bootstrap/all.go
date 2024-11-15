@@ -59,12 +59,15 @@ func All() fx.Option {
 		fx.Provide(usecase.NewEncryptUseCase),
 		fx.Provide(usecase.NewGetProviderUseCase),
 		fx.Provide(usecase.NewGetIntegrationUseCase),
+		fx.Provide(usecase.NewGetRepositoryUseCase),
 
 		//Provide service
 		fx.Provide(service.NewIntegrationService),
+		fx.Provide(service.NewRepositoryService),
 
 		//Provide controller
 		fx.Provide(controller.NewIntegrationController),
+		fx.Provide(controller.NewRepositoryController),
 
 		// Provide gin http server auto config,
 		// actuator endpoints and application routers

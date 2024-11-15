@@ -1,6 +1,9 @@
 package response
 
-import "github.com/khaitq-vnist/auto_ci_be/core/entity/dto"
+import (
+	"github.com/khaitq-vnist/auto_ci_be/core/entity/dto"
+	"time"
+)
 
 type GithubUserInfoResponse struct {
 	Login             string `json:"login"`
@@ -37,6 +40,18 @@ type GithubUserInfoResponse struct {
 	UpdatedAt         string `json:"updated_at"`
 }
 
+type GithubRepoInfo struct {
+	ID          int64     `json:"id"`
+	NodeID      string    `json:"node_id"`
+	Name        string    `json:"name"`
+	FullName    string    `json:"full_name"`
+	Private     bool      `json:"private"`
+	HtmlUrl     string    `json:"html_url"`
+	Description string    `json:"description"`
+	CreateAt    time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+}
+
 func (u *GithubUserInfoResponse) ToUserInfo() *dto.ThirdPartyProviderUserInfoResponse {
 	return &dto.ThirdPartyProviderUserInfoResponse{
 		Username: u.Login,
@@ -44,4 +59,18 @@ func (u *GithubUserInfoResponse) ToUserInfo() *dto.ThirdPartyProviderUserInfoRes
 		Company:  u.Company,
 		Email:    u.Email,
 	}
+}
+func ToThirdPartyProviderProjectResponse(repos []*GithubRepoInfo) []*dto.ThirdPartyProviderReposResponse {
+	var result []*dto.ThirdPartyProviderReposResponse
+	for _, repo := range repos {
+		result = append(result, &dto.ThirdPartyProviderReposResponse{
+			ID:        repo.ID,
+			Name:      repo.Name,
+			Private:   repo.Private,
+			FullName:  repo.FullName,
+			CreateAt:  repo.CreateAt.Unix(),
+			UpdatedAt: repo.UpdatedAt.Unix(),
+		})
+	}
+	return result
 }

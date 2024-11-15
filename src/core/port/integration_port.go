@@ -8,4 +8,5 @@ import (
 type IIntegrationPort interface {
 	SaveIntegration(ctx *context.Context, integration *entity.IntegrationEntity) (*entity.IntegrationEntity, error)
 	GetIntegrationByUserId(ctx *context.Context, userId int64) ([]*entity.IntegrationEntity, error)
+	GetIntegrationByIdAndUserId(ctx *context.Context, integrationId, userId int64) (*entity.IntegrationEntity, error)
 }

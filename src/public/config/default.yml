@@ -7,3 +7,4 @@ app:
         - /actuator/health
         - /actuator/info
         - /v1/integrations
+        - /v1/repositories/*
