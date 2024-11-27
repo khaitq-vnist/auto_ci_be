@@ -8,9 +8,14 @@ import (
 
 type IGetProjectUseCase interface {
 	GetProjectList(c context.Context, userId int64) ([]*entity.ProjectEntity, error)
+	GetProjectById(c context.Context, projectId int64) (*entity.ProjectEntity, error)
 }
 type GetProjectUseCase struct {
 	projectPort port.IProjectPort
+}
+
+func (g GetProjectUseCase) GetProjectById(c context.Context, projectId int64) (*entity.ProjectEntity, error) {
+	return g.projectPort.GetProjectById(c, projectId)
 }
 
 func (g GetProjectUseCase) GetProjectList(c context.Context, userId int64) ([]*entity.ProjectEntity, error) {

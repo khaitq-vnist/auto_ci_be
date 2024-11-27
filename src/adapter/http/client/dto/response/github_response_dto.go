@@ -52,6 +52,12 @@ type GithubRepoInfo struct {
 	UpdatedAt   time.Time `json:"updated_at"`
 }
 
+type GithubContentResponse struct {
+	Name string `json:"name"`
+	Type string `json:"type"`
+	Path string `json:"path"`
+}
+
 func (u *GithubUserInfoResponse) ToUserInfo() *response.ThirdPartyProviderUserInfoResponse {
 	return &response.ThirdPartyProviderUserInfoResponse{
 		Username: u.Login,
@@ -85,4 +91,11 @@ func ToListThirdPartyProviderRepoResponse(repos []*GithubRepoInfo) []*response.T
 		})
 	}
 	return result
+}
+func ToThirdPartyContentResponse(content *GithubContentResponse) *response.ThirdPartyContentResponse {
+	return &response.ThirdPartyContentResponse{
+		Name: content.Name,
+		Type: content.Type,
+		Path: content.Path,
+	}
 }

@@ -12,4 +12,5 @@ type ProjectEntity struct {
 	ProviderCode     string
 	ProviderUsername string
 	HtmlUrl          string
+	IntegrationId    int64
 }

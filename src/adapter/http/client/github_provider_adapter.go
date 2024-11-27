@@ -23,6 +23,21 @@ type GithubProviderClient struct {
 	props      *properties.GithubProperties
 }
 
+func (g *GithubProviderClient) GetContentFromRepository(ctx *context.Context, token string, repoId int64, path string) (*response2.ThirdPartyContentResponse, error) {
+	var content response.GithubContentResponse
+	rsp, err := g.httpClient.Get(*ctx, g.props.BaseUrl+fmt.Sprintf("/repositories/%d/contents/%s", repoId, path), &content,
+		client.WithHeader("Authorization", "Bearer "+token))
+	if err != nil {
+		log.Error(ctx, "Error when get content from github", err)
+		return nil, err
+	}
+	if rsp.StatusCode != 200 || &content == nil {
+		log.Error(ctx, "Error when get content from github", err)
+		return nil, errors.New("error when get content from github")
+	}
+	return response.ToThirdPartyContentResponse(&content), nil
+}
+
 func (g *GithubProviderClient) GetRepositoryInfo(ctx *context.Context, token string, repoId int64) (*response2.ThirdPartyProviderReposResponse, error) {
 	var repo response.GithubRepoInfo
 	rsp, err := g.httpClient.Get(*ctx, g.props.BaseUrl+fmt.Sprintf(PathGetDetailRepo, repoId), &repo, client.WithHeader("Authorization", "Bearer "+token),

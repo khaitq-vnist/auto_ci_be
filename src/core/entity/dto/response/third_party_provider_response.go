@@ -18,3 +18,9 @@ type ThirdPartyProviderReposResponse struct {
 	CreateAt    int64
 	UpdatedAt   int64
 }
+
+type ThirdPartyContentResponse struct {
+	Name string
+	Type string
+	Path string
+}

@@ -10,6 +10,7 @@ type ProjectModel struct {
 	Language       *string `gorm:"size:50;column:language"`
 	HtmlUrl        string  `gorm:"size:255;column:html_url"`
 	ProviderRepoID int64   `gorm:"column:provider_repo_id"`
+	IntegrationId  int64   `gorm:"column:integration_id"`
 }
 
 func (p ProjectModel) TableName() string {

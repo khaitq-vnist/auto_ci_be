@@ -14,6 +14,20 @@ type ThirdPartyProviderAdapter struct {
 	strategies map[string]strategy.IThirdPartyStrategy
 }
 
+func (t *ThirdPartyProviderAdapter) GetContentFromRepository(ctx *context.Context, provider string, token string, repoId int64, path string) (*response.ThirdPartyContentResponse, error) {
+	partyStrategy := t.getStrategy(provider)
+	if partyStrategy == nil {
+		log.Error(ctx, "Provider not found", nil)
+		return nil, errors.New("provider not found")
+	}
+	content, err := partyStrategy.GetContentFromRepository(ctx, token, repoId, path)
+	if err != nil {
+		log.Error(ctx, "Error when get content from third party provider", err)
+		return nil, err
+	}
+	return content, nil
+}
+
 func (t *ThirdPartyProviderAdapter) GetRepositoryInfo(ctx *context.Context, provider string, token string, repoId int64) (*response.ThirdPartyProviderReposResponse, error) {
 	partyStrategy := t.getStrategy(provider)
 	if partyStrategy == nil {
