@@ -99,3 +99,44 @@ func ToThirdPartyContentResponse(content *GithubContentResponse) *response.Third
 		Path: content.Path,
 	}
 }
+func ToListThirdPartyContentResponse(content []*GithubContentResponse) []*response.ThirdPartyContentResponse {
+	var result []*response.ThirdPartyContentResponse
+	for _, c := range content {
+		result = append(result, ToThirdPartyContentResponse(c))
+	}
+	return result
+}
+
+type GitHubBranchResponse struct {
+	Name   string `json:"name"`
+	Commit struct {
+		SHA string `json:"sha"`
+		URL string `json:"url"`
+	} `json:"commit"`
+	Protected  bool `json:"protected"`
+	Protection struct {
+		RequiredStatusChecks struct {
+			EnforcementLevel string   `json:"enforcement_level"`
+			Contexts         []string `json:"contexts"`
+		} `json:"required_status_checks"`
+	} `json:"protection"`
+	ProtectionURL string `json:"protection_url"`
+}
+
+func ToThirdPartyBranchResponse(branch *GitHubBranchResponse) *response.ThirdPartyBranchResponse {
+	return &response.ThirdPartyBranchResponse{
+		Name: branch.Name,
+		Commit: response.Commit{
+			Sha: branch.Commit.SHA,
+			URL: branch.Commit.URL,
+		},
+	}
+}
+
+func ToListThirdPartyBranchResponse(branches []*GitHubBranchResponse) []*response.ThirdPartyBranchResponse {
+	var result []*response.ThirdPartyBranchResponse
+	for _, b := range branches {
+		result = append(result, ToThirdPartyBranchResponse(b))
+	}
+	return result
+}

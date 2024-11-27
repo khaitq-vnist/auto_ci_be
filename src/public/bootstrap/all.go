@@ -63,6 +63,8 @@ func All() fx.Option {
 		fx.Provide(usecase.NewGetRepositoryUseCase),
 		fx.Provide(usecase.NewGetProjectUseCase),
 		fx.Provide(usecase.NewCreateProjectUseCase),
+		fx.Provide(usecase.NewAnalyzeSourceCodeUsecase),
+		fx.Provide(usecase.NewGetBranchUseCase),
 
 		//Provide service
 		fx.Provide(service.NewIntegrationService),

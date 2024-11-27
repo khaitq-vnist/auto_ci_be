@@ -10,5 +10,7 @@ type IThirdPartyStrategy interface {
 	GetListRepositoriesByUser(ctx *context.Context, token string, username string) ([]*response.ThirdPartyProviderReposResponse, error)
 	GetRepositoryInfo(ctx *context.Context, token string, repoId int64) (*response.ThirdPartyProviderReposResponse, error)
 
-	GetContentFromRepository(ctx *context.Context, token string, repoId int64, path string) (*response.ThirdPartyContentResponse, error)
+	GetContentFromRepository(ctx *context.Context, username, token, repo, path string) ([]*response.ThirdPartyContentResponse, error)
+
+	GetListBranches(ctx *context.Context, username, token, repo string) ([]*response.ThirdPartyBranchResponse, error)
 }

@@ -9,3 +9,4 @@ app:
         - /v1/integrations
         - /v1/repositories/*
         - /v1/projects
+        - /v1/projects/*

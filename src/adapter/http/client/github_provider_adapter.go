@@ -23,9 +23,28 @@ type GithubProviderClient struct {
 	props      *properties.GithubProperties
 }
 
-func (g *GithubProviderClient) GetContentFromRepository(ctx *context.Context, token string, repoId int64, path string) (*response2.ThirdPartyContentResponse, error) {
-	var content response.GithubContentResponse
-	rsp, err := g.httpClient.Get(*ctx, g.props.BaseUrl+fmt.Sprintf("/repositories/%d/contents/%s", repoId, path), &content,
+func (g *GithubProviderClient) GetListBranches(ctx *context.Context, username, token, repo string) ([]*response2.ThirdPartyBranchResponse, error) {
+	var branches []*response.GitHubBranchResponse
+	rsp, err := g.httpClient.Get(*ctx, g.props.BaseUrl+fmt.Sprintf("/repos/%s/%s/branches", username, repo), &branches,
+		client.WithHeader("Authorization", "Bearer "+token))
+	if err != nil {
+		log.Error(ctx, "Error when get branches from github", err)
+		return nil, err
+	}
+	if rsp.StatusCode != 200 || &branches == nil {
+		log.Error(ctx, "Error when get branches from github", err)
+		return nil, errors.New("error when get branches from github")
+	}
+	return response.ToListThirdPartyBranchResponse(branches), nil
+}
+
+func (g *GithubProviderClient) GetContentFromRepository(ctx *context.Context, username, token, repo, path string) ([]*response2.ThirdPartyContentResponse, error) {
+	var content []*response.GithubContentResponse
+	url := g.props.BaseUrl + fmt.Sprintf("/repos/%s/%s/contents/", username, repo)
+	if path != "" {
+		url += path
+	}
+	rsp, err := g.httpClient.Get(*ctx, url, &content,
 		client.WithHeader("Authorization", "Bearer "+token))
 	if err != nil {
 		log.Error(ctx, "Error when get content from github", err)
@@ -35,7 +54,7 @@ func (g *GithubProviderClient) GetContentFromRepository(ctx *context.Context, to
 		log.Error(ctx, "Error when get content from github", err)
 		return nil, errors.New("error when get content from github")
 	}
-	return response.ToThirdPartyContentResponse(&content), nil
+	return response.ToListThirdPartyContentResponse(content), nil
 }
 
 func (g *GithubProviderClient) GetRepositoryInfo(ctx *context.Context, token string, repoId int64) (*response2.ThirdPartyProviderReposResponse, error) {

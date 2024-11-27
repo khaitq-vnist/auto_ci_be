@@ -14,18 +14,32 @@ type ThirdPartyProviderAdapter struct {
 	strategies map[string]strategy.IThirdPartyStrategy
 }
 
-func (t *ThirdPartyProviderAdapter) GetContentFromRepository(ctx *context.Context, provider string, token string, repoId int64, path string) (*response.ThirdPartyContentResponse, error) {
+func (t *ThirdPartyProviderAdapter) GetListBranches(ctx *context.Context, provider string, username, token, repo string) ([]*response.ThirdPartyBranchResponse, error) {
 	partyStrategy := t.getStrategy(provider)
 	if partyStrategy == nil {
 		log.Error(ctx, "Provider not found", nil)
 		return nil, errors.New("provider not found")
 	}
-	content, err := partyStrategy.GetContentFromRepository(ctx, token, repoId, path)
+	branches, err := partyStrategy.GetListBranches(ctx, username, token, repo)
+	if err != nil {
+		log.Error(ctx, "Error when get branches from third party provider", err)
+		return nil, err
+	}
+	return branches, nil
+}
+
+func (t *ThirdPartyProviderAdapter) GetContentFromRepository(ctx *context.Context, provider, username, token, repo, path string) ([]*response.ThirdPartyContentResponse, error) {
+	partyStrategy := t.getStrategy(provider)
+	if partyStrategy == nil {
+		log.Error(ctx, "Provider not found", nil)
+		return nil, errors.New("provider not found")
+	}
+	contents, err := partyStrategy.GetContentFromRepository(ctx, username, token, repo, path)
 	if err != nil {
 		log.Error(ctx, "Error when get content from third party provider", err)
 		return nil, err
 	}
-	return content, nil
+	return contents, nil
 }
 
 func (t *ThirdPartyProviderAdapter) GetRepositoryInfo(ctx *context.Context, provider string, token string, repoId int64) (*response.ThirdPartyProviderReposResponse, error) {

@@ -8,6 +8,7 @@ import (
 	"github.com/khaitq-vnist/auto_ci_be/public/resource/request"
 	"github.com/khaitq-vnist/auto_ci_be/public/resource/response"
 	"github.com/khaitq-vnist/auto_ci_be/public/service"
+	"strconv"
 )
 
 type ProjectController struct {
@@ -44,4 +45,36 @@ func (p ProjectController) CreateProject(c *gin.Context) {
 		return
 	}
 	apihelper.SuccessfulHandle(c, response.ToProjectResponse(result))
+}
+func (p ProjectController) AnalyzeProject(c *gin.Context) {
+	userId := int64(1)
+	projectId, err := strconv.ParseInt(c.Param("projectId"), 10, 64)
+	if err != nil {
+		log.Error(c, "parse project id error: %v", err)
+		apihelper.AbortErrorHandle(c, common.GeneralBadRequest)
+		return
+	}
+	result, err := p.projectService.AnalyzeProject(c, userId, projectId)
+	if err != nil {
+		log.Error(c, "analyze project error: %v", err)
+		apihelper.AbortErrorHandle(c, common.GeneralServiceUnavailable)
+		return
+	}
+	apihelper.SuccessfulHandle(c, response.ToProjectAnalyzeResponse(result.Tools))
+}
+func (p ProjectController) GetListBranches(c *gin.Context) {
+	userId := int64(1)
+	projectId, err := strconv.ParseInt(c.Param("projectId"), 10, 64)
+	if err != nil {
+		log.Error(c, "parse project id error: %v", err)
+		apihelper.AbortErrorHandle(c, common.GeneralBadRequest)
+		return
+	}
+	result, err := p.projectService.GetListBranches(c, userId, projectId)
+	if err != nil {
+		log.Error(c, "get list branches error: %v", err)
+		apihelper.AbortErrorHandle(c, common.GeneralServiceUnavailable)
+		return
+	}
+	apihelper.SuccessfulHandle(c, response.ToListBranchResponse(result))
 }
