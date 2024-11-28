@@ -13,5 +13,13 @@ func ToCommandTemplateEntity(commandTemplateModel *model.CommandTemplateModel) *
 			UpdatedAt: commandTemplateModel.UpdatedAt.Unix(),
 		},
 		Command: commandTemplateModel.Command,
+		StageID: commandTemplateModel.StageId,
 	}
+}
+func ToListCommandTemplateEntity(commandTemplates []*model.CommandTemplateModel) []*entity.CommandTemplateEntity {
+	var commandTemplateEntities []*entity.CommandTemplateEntity
+	for _, commandTemplate := range commandTemplates {
+		commandTemplateEntities = append(commandTemplateEntities, ToCommandTemplateEntity(commandTemplate))
+	}
+	return commandTemplateEntities
 }

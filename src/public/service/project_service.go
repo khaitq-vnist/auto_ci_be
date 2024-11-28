@@ -13,12 +13,18 @@ type IProjectService interface {
 	CreateProject(ctx context.Context, userID, integrationID, repoID int64) (*entity.ProjectEntity, error)
 	AnalyzeProject(ctx context.Context, userID, projectID int64) (*dto.AnalyzeSourceCodeDTO, error)
 	GetListBranches(ctx context.Context, userID, projectID int64) ([]*response.ThirdPartyBranchResponse, error)
+	GetTemplateByBuildTool(ctx context.Context, buildTool string) (*response.PipelineTemplateResponse, error)
 }
 type ProjectService struct {
-	getProjectUseCase        usecase.IGetProjectUseCase
-	createProjectUseCase     usecase.ICreateProjectUseCase
-	analyzeSourceCodeUsecase usecase.IAnalyzeSourceCodeUsecase
-	getListBranchUseCase     usecase.IGetBranchUseCase
+	getProjectUseCase          usecase.IGetProjectUseCase
+	createProjectUseCase       usecase.ICreateProjectUseCase
+	analyzeSourceCodeUsecase   usecase.IAnalyzeSourceCodeUsecase
+	getListBranchUseCase       usecase.IGetBranchUseCase
+	getPipelineTemplateUseCase usecase.IGetPipelineTemplateUsecase
+}
+
+func (p ProjectService) GetTemplateByBuildTool(ctx context.Context, buildTool string) (*response.PipelineTemplateResponse, error) {
+	return p.getPipelineTemplateUseCase.GetPipelineTemplate(ctx, buildTool)
 }
 
 func (p ProjectService) GetListBranches(ctx context.Context, userID, projectID int64) ([]*response.ThirdPartyBranchResponse, error) {
@@ -37,11 +43,13 @@ func (p ProjectService) GetProjectList(ctx context.Context, userID int64) ([]*en
 	return p.getProjectUseCase.GetProjectList(ctx, userID)
 }
 
-func NewProjectService(getProjectUseCase usecase.IGetProjectUseCase, createProjectUseCase usecase.ICreateProjectUseCase, analyzeSourceCodeUsecase usecase.IAnalyzeSourceCodeUsecase, getListBranchUseCase usecase.IGetBranchUseCase) IProjectService {
+func NewProjectService(getProjectUseCase usecase.IGetProjectUseCase, createProjectUseCase usecase.ICreateProjectUseCase, analyzeSourceCodeUsecase usecase.IAnalyzeSourceCodeUsecase, getListBranchUseCase usecase.IGetBranchUseCase,
+	getPipelineTemplateUseCase usecase.IGetPipelineTemplateUsecase) IProjectService {
 	return &ProjectService{
-		getProjectUseCase:        getProjectUseCase,
-		createProjectUseCase:     createProjectUseCase,
-		analyzeSourceCodeUsecase: analyzeSourceCodeUsecase,
-		getListBranchUseCase:     getListBranchUseCase,
+		getProjectUseCase:          getProjectUseCase,
+		createProjectUseCase:       createProjectUseCase,
+		analyzeSourceCodeUsecase:   analyzeSourceCodeUsecase,
+		getListBranchUseCase:       getListBranchUseCase,
+		getPipelineTemplateUseCase: getPipelineTemplateUseCase,
 	}
 }

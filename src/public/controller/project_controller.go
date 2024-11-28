@@ -78,3 +78,14 @@ func (p ProjectController) GetListBranches(c *gin.Context) {
 	}
 	apihelper.SuccessfulHandle(c, response.ToListBranchResponse(result))
 }
+
+func (p ProjectController) GetTemplateByBuildTool(c *gin.Context) {
+	buildTool := c.Param("buildTool")
+	result, err := p.projectService.GetTemplateByBuildTool(c, buildTool)
+	if err != nil {
+		log.Error(c, "get template by build tool error: %v", err)
+		apihelper.AbortErrorHandle(c, common.GeneralServiceUnavailable)
+		return
+	}
+	apihelper.SuccessfulHandle(c, result)
+}

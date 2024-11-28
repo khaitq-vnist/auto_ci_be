@@ -5,4 +5,5 @@ type PipelineTemplateEntity struct {
 	Name        string
 	BuildTool   string
 	Description string
+	Stages      []*StageTemplateEntity
 }

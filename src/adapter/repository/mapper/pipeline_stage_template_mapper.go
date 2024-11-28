@@ -16,3 +16,11 @@ func ToPipelineStageTemplateEntity(pipelineStageTemplateModel *model.PipelineSta
 		StageID:    pipelineStageTemplateModel.StageID,
 	}
 }
+
+func ToListPipelineStageTemplateEntity(pipelineStageTemplateModels []*model.PipelineStageTemplateModel) []*entity.PipelineStageTemplateEntity {
+	var pipelineStageTemplateEntities []*entity.PipelineStageTemplateEntity
+	for _, pipelineStageTemplateModel := range pipelineStageTemplateModels {
+		pipelineStageTemplateEntities = append(pipelineStageTemplateEntities, ToPipelineStageTemplateEntity(pipelineStageTemplateModel))
+	}
+	return pipelineStageTemplateEntities
+}

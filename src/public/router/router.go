@@ -58,5 +58,6 @@ func RegisterGinRouters(p RegisterRoutersIn) {
 		v1ProjectGroup.POST("", p.ProjectController.CreateProject)
 		v1ProjectGroup.GET("/:projectId/analyze", p.ProjectController.AnalyzeProject)
 		v1ProjectGroup.GET("/:projectId/branches", p.ProjectController.GetListBranches)
+		v1ProjectGroup.GET("/template/:buildTool", p.ProjectController.GetTemplateByBuildTool)
 	}
 }

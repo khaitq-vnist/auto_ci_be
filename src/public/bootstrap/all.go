@@ -50,6 +50,11 @@ func All() fx.Option {
 		fx.Provide(postgres.NewIntegrationRepositoryAdapter),
 		fx.Provide(client.NewThirdPartyProviderAdapter),
 		fx.Provide(postgres.NewProjectRepositoryAdapter),
+		fx.Provide(postgres.NewPipelineTemplateRepositoryAdapter),
+		fx.Provide(postgres.NewPipelineStageTemplateRepoAdapter),
+		fx.Provide(postgres.NewStageTemplateRepoAdapter),
+		fx.Provide(postgres.NewCommandTemplateRepoAdapter),
+		fx.Provide(postgres.NewVariableTemplateRepoAdapter),
 
 		//Provide client's implements
 		fx.Provide(client.NewGithubProviderClient),
@@ -65,6 +70,7 @@ func All() fx.Option {
 		fx.Provide(usecase.NewCreateProjectUseCase),
 		fx.Provide(usecase.NewAnalyzeSourceCodeUsecase),
 		fx.Provide(usecase.NewGetBranchUseCase),
+		fx.Provide(usecase.NewGetPipelineTemplateUsecase),
 
 		//Provide service
 		fx.Provide(service.NewIntegrationService),
