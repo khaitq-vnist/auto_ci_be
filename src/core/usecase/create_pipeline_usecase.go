@@ -23,7 +23,7 @@ func (c CreatePipelineUsecase) CreateNewPipeline(ctx context.Context, projectID 
 	}
 	actions := pipeline.Actions
 	for _, action := range actions {
-		_, err := c.thirdPartyToolPort.CreateNewAction(ctx, "test", newPipeline.ID, action)
+		_, err := c.thirdPartyToolPort.CreateNewAction(ctx, "demo-ci-cd", newPipeline.ID, action)
 		if err != nil {
 			log.Error(ctx, "Error when create new action", err)
 		}

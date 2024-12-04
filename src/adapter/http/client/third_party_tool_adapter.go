@@ -20,6 +20,7 @@ const (
 var (
 	CreateNewPipelinePath = "/workspaces/%s/projects/%s/pipelines"
 	CreateNewActionPath   = "/workspaces/%s/projects/%s/pipelines/%d/actions"
+	GetListPipelinePath   = "/workspaces/%s/projects/%s/pipelines"
 )
 
 type ThirdPartyToolAdapter struct {
@@ -27,19 +28,52 @@ type ThirdPartyToolAdapter struct {
 	props      *properties.BuddyProperties
 }
 
+func (t ThirdPartyToolAdapter) GetListPipeline(ctx context.Context, project string) ([]*entity.PipelineEntity, error) {
+	client := resty.New()
+
+	var resp response.BuddyPipelineListResponse
+	rsp, err := client.R().
+		SetContext(ctx).
+		SetHeader("Authorization", "Bearer "+t.props.AccessToken).
+		SetResult(&resp).
+		Get(t.props.BaseUrl + fmt.Sprintf(GetListPipelinePath, DefaultWorkspace, project))
+
+	if err != nil {
+		log.Error(ctx, "Error when getting list of pipelines:", err)
+		return nil, err
+	}
+
+	if rsp.StatusCode() != 200 {
+		log.Error(ctx, "Get list pipeline failed with status:", rsp.StatusCode())
+		return nil, fmt.Errorf("failed to get pipelines, status code: %d", rsp.StatusCode())
+	}
+
+	return response.ToListPipelineEntities(&resp), nil
+}
+
 func (t ThirdPartyToolAdapter) CreateNewAction(ctx context.Context, project string, pipelineID int64, action *entity.ActionEntity) (*entity.ActionEntity, error) {
+	client := resty.New()
+
 	request := request2.ToBuddyActionRequest(action)
 	var resp response.BuddyCreateActionResponse
-	rsp, err := t.httpClient.Post(ctx, t.props.BaseUrl+fmt.Sprint(CreateNewActionPath, DefaultWorkspace, project, pipelineID), request, resp,
-		client.WithHeader("Authorization", "Bearer "+t.props.AccessToken))
+
+	rsp, err := client.R().
+		SetContext(ctx).
+		SetHeader("Authorization", "Bearer "+t.props.AccessToken).
+		SetBody(request).
+		SetResult(&resp).
+		Post(t.props.BaseUrl + fmt.Sprintf(CreateNewActionPath, DefaultWorkspace, project, pipelineID))
+
 	if err != nil {
-		log.Error(ctx, "Error when create new action", err)
+		log.Error(ctx, "Error when creating a new action:", err)
 		return nil, err
 	}
-	if rsp.StatusCode != 201 {
-		log.Error(ctx, "Create new action failed")
-		return nil, err
+
+	if rsp.StatusCode() != 201 {
+		log.Error(ctx, "Create new action failed with status:", rsp.StatusCode())
+		return nil, fmt.Errorf("failed to create action, status code: %d", rsp.StatusCode())
 	}
+
 	return response.ToActionEntity(&resp), nil
 }
 
