@@ -10,6 +10,7 @@ import (
 	"github.com/khaitq-vnist/auto_ci_be/adapter/http/client/dto/response"
 	"github.com/khaitq-vnist/auto_ci_be/adapter/properties"
 	"github.com/khaitq-vnist/auto_ci_be/core/entity"
+	response2 "github.com/khaitq-vnist/auto_ci_be/core/entity/dto/response"
 	"github.com/khaitq-vnist/auto_ci_be/core/port"
 )
 
@@ -21,6 +22,8 @@ var (
 	CreateNewPipelinePath = "/workspaces/%s/projects/%s/pipelines"
 	CreateNewActionPath   = "/workspaces/%s/projects/%s/pipelines/%d/actions"
 	GetListPipelinePath   = "/workspaces/%s/projects/%s/pipelines"
+	GetListExecutionsPath = "/workspaces/%s/projects/%s/pipelines/%d/executions"
+	GetExecutionDetail    = "/workspaces/%s/projects/%s/pipelines/%d/executions/%d"
 )
 
 type ThirdPartyToolAdapter struct {
@@ -28,11 +31,49 @@ type ThirdPartyToolAdapter struct {
 	props      *properties.BuddyProperties
 }
 
+func (t ThirdPartyToolAdapter) GetExecutionDetail(ctx context.Context, project string, pipelineID, executionID int64) (*response2.ExecutionResponse, error) {
+	httpClient := resty.New()
+	var resp response.BuddyExecutionResponse
+	rsp, err := httpClient.R().
+		SetContext(ctx).
+		SetHeader("Authorization", "Bearer "+t.props.AccessToken).
+		SetResult(&resp).
+		Get(t.props.BaseUrl + fmt.Sprintf(GetExecutionDetail, DefaultWorkspace, project, pipelineID, executionID))
+	if err != nil {
+		log.Error(ctx, "Error when getting execution detail:", err)
+		return nil, err
+	}
+	if rsp.StatusCode() != 200 {
+		log.Error(ctx, "Get execution detail failed with status:", rsp.StatusCode())
+		return nil, fmt.Errorf("failed to get execution detail, status code: %d", rsp.StatusCode())
+	}
+	return response.ToExecutionDetail(&resp), nil
+}
+
+func (t ThirdPartyToolAdapter) GetListExecutions(ctx context.Context, project string, pipelineID int64) (*response2.ThirdPartyListExecutionResponse, error) {
+	httpClient := resty.New()
+	var resp response.BuddyListExecutionResponse
+	rsp, err := httpClient.R().
+		SetContext(ctx).
+		SetHeader("Authorization", "Bearer "+t.props.AccessToken).
+		SetResult(&resp).
+		Get(t.props.BaseUrl + fmt.Sprintf(GetListExecutionsPath, DefaultWorkspace, project, pipelineID))
+	if err != nil {
+		log.Error(ctx, "Error when getting list of executions:", err)
+		return nil, err
+	}
+	if rsp.StatusCode() != 200 {
+		log.Error(ctx, "Get list executions failed with status:", rsp.StatusCode())
+		return nil, fmt.Errorf("failed to get executions, status code: %d", rsp.StatusCode())
+	}
+	return response.ToListExecutionResponse(&resp), nil
+}
+
 func (t ThirdPartyToolAdapter) GetListPipeline(ctx context.Context, project string) ([]*entity.PipelineEntity, error) {
-	client := resty.New()
+	httpClient := resty.New()
 
 	var resp response.BuddyPipelineListResponse
-	rsp, err := client.R().
+	rsp, err := httpClient.R().
 		SetContext(ctx).
 		SetHeader("Authorization", "Bearer "+t.props.AccessToken).
 		SetResult(&resp).
@@ -52,12 +93,12 @@ func (t ThirdPartyToolAdapter) GetListPipeline(ctx context.Context, project stri
 }
 
 func (t ThirdPartyToolAdapter) CreateNewAction(ctx context.Context, project string, pipelineID int64, action *entity.ActionEntity) (*entity.ActionEntity, error) {
-	client := resty.New()
+	httpClient := resty.New()
 
 	request := request2.ToBuddyActionRequest(action)
 	var resp response.BuddyCreateActionResponse
 
-	rsp, err := client.R().
+	rsp, err := httpClient.R().
 		SetContext(ctx).
 		SetHeader("Authorization", "Bearer "+t.props.AccessToken).
 		SetBody(request).
@@ -81,14 +122,14 @@ func (t ThirdPartyToolAdapter) CreateNewPipeline(ctx context.Context, project st
 	request := request2.ToBuddyPipelineRequest(pipeline)
 	requestBody, _ := request.ToJson()
 
-	// Create a new Resty client
-	client := resty.New()
+	// Create a new Resty httpClient
+	httpClient := resty.New()
 
 	// Define the API URL
 	url := t.props.BaseUrl + fmt.Sprintf(CreateNewPipelinePath, DefaultWorkspace, project)
 
 	// Perform the POST request
-	resp, err := client.R().
+	resp, err := httpClient.R().
 		SetHeader("Authorization", "Bearer "+t.props.AccessToken).
 		SetHeader("Content-Type", "application/json").
 		SetBody(requestBody).

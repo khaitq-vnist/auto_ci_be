@@ -61,6 +61,8 @@ func RegisterGinRouters(p RegisterRoutersIn) {
 		v1ProjectGroup.GET("/:projectId/branches", p.ProjectController.GetListBranches)
 		v1ProjectGroup.GET("/template/:buildTool", p.ProjectController.GetTemplateByBuildTool)
 		v1ProjectGroup.GET("/:projectId/pipelines", p.PipelineController.GetListPipeline)
+		v1ProjectGroup.GET("/:projectId/pipelines/:pipelineId/executions", p.PipelineController.GetListExecution)
+		v1ProjectGroup.GET("/:projectId/pipelines/:pipelineId/executions/:executionId", p.PipelineController.GetExecutionDetail)
 	}
 	v1PipelineGroup := group.Group("/v1/pipelines")
 	{
