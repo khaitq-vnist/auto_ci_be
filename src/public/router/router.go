@@ -18,6 +18,7 @@ type RegisterRoutersIn struct {
 	IntegrationController *controller.IntegrationController
 	RepositoryController  *controller.RepositoryController
 	ProjectController     *controller.ProjectController
+	PipelineController    *controller.PipelineController
 }
 
 func RegisterGinRouters(p RegisterRoutersIn) {
@@ -59,5 +60,9 @@ func RegisterGinRouters(p RegisterRoutersIn) {
 		v1ProjectGroup.GET("/:projectId/analyze", p.ProjectController.AnalyzeProject)
 		v1ProjectGroup.GET("/:projectId/branches", p.ProjectController.GetListBranches)
 		v1ProjectGroup.GET("/template/:buildTool", p.ProjectController.GetTemplateByBuildTool)
+	}
+	v1PipelineGroup := group.Group("/v1/pipelines")
+	{
+		v1PipelineGroup.POST("", p.PipelineController.CreatePipeline)
 	}
 }

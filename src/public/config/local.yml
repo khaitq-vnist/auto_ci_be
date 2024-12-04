@@ -28,3 +28,7 @@ app:
       BaseURL: https://api.github.com
     encrypt:
         key: "1234567890123456"
+    buddy:
+      BaseUrl: https://api.buddy.works
+      AccessToken: ${BUDDY_ACCESS_TOKEN}
+

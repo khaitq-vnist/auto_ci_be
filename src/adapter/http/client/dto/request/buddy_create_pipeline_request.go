@@ -1,25 +1,29 @@
 package request
 
-import "github.com/khaitq-vnist/auto_ci_be/core/entity"
+import (
+	"encoding/json"
+	"github.com/khaitq-vnist/auto_ci_be/core/entity"
+)
 
 type BuddyCreatePipelineRequest struct {
-	Name                      string           `json:"name"`
-	ON                        string           `json:"on"`
-	Refs                      []string         `json:"refs"`
-	Event                     []*BuddyEventReq `json:"events"`
-	ExecutionMessageTemplate  string           `json:"execution_message_template"`
-	AlwaysFromScratch         bool             `json:"always_from_scratch"`
-	AutoClearCache            bool             `json:"auto_clear_cache"`
-	NoSkipToMostRecent        bool             `json:"no_skip_to_most_recent"`
-	DoNotCreateCommitStatus   bool             `json:"do_not_create_commit_status"`
-	IgnoreFailOnProjectStatus bool             `json:"ignore_fail_on_project_status"`
-	FilesystemChangesetBase   string           `json:"filesystem_changeset_base"`
-	ConcurrentPipelineRuns    bool             `json:"concurrent_pipeline_runs"`
-	GitChangesetBase          string           `json:"git_changeset_base"`
+	Name                      string           `json:"name,omitempty"`
+	ON                        string           `json:"on,omitempty"`
+	Refs                      []string         `json:"refs,omitempty"`
+	Event                     []*BuddyEventReq `json:"events,omitempty"`
+	ExecutionMessageTemplate  string           `json:"execution_message_template,omitempty"`
+	AlwaysFromScratch         bool             `json:"always_from_scratch,omitempty"`
+	AutoClearCache            bool             `json:"auto_clear_cache,omitempty"`
+	NoSkipToMostRecent        bool             `json:"no_skip_to_most_recent,omitempty"`
+	DoNotCreateCommitStatus   bool             `json:"do_not_create_commit_status,omitempty"`
+	IgnoreFailOnProjectStatus bool             `json:"ignore_fail_on_project_status,omitempty"`
+	FilesystemChangesetBase   string           `json:"filesystem_changeset_base,omitempty"`
+	ConcurrentPipelineRuns    bool             `json:"concurrent_pipeline_runs,omitempty"`
+	GitChangesetBase          string           `json:"git_changeset_base,omitempty"`
 }
+
 type BuddyEventReq struct {
-	Type string `json:"type"`
-	refs []string
+	Type string   `json:"type"`
+	Refs []string `json:"refs"`
 }
 
 func ToBuddyPipelineRequest(pipeline *entity.PipelineEntity) *BuddyCreatePipelineRequest {
@@ -27,7 +31,7 @@ func ToBuddyPipelineRequest(pipeline *entity.PipelineEntity) *BuddyCreatePipelin
 	for _, event := range pipeline.Events {
 		events = append(events, &BuddyEventReq{
 			Type: event.Type,
-			refs: event.Refs,
+			Refs: event.Refs,
 		})
 	}
 	return &BuddyCreatePipelineRequest{
@@ -36,4 +40,7 @@ func ToBuddyPipelineRequest(pipeline *entity.PipelineEntity) *BuddyCreatePipelin
 		Event: events,
 		Refs:  pipeline.Refs,
 	}
+}
+func (b *BuddyCreatePipelineRequest) ToJson() ([]byte, error) {
+	return json.Marshal(b)
 }

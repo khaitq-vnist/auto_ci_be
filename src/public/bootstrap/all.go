@@ -42,6 +42,7 @@ func All() fx.Option {
 		//golib.ProvideProps(properties.NewGitlabProperties),
 		golib.ProvideProps(properties.NewGithubProperties),
 		golib.ProvideProps(properties2.NewEncryptProperties),
+		golib.ProvideProps(properties.NewBuddyProperties),
 
 		//Provide port's implements
 		fx.Provide(postgres.NewBaseRepository),
@@ -58,6 +59,7 @@ func All() fx.Option {
 
 		//Provide client's implements
 		fx.Provide(client.NewGithubProviderClient),
+		fx.Provide(client.NewThirdPartyToolAdapter),
 
 		//Provide usecase
 		fx.Provide(usecase.NewGetThirdPartyProviderUseCase),
@@ -71,16 +73,19 @@ func All() fx.Option {
 		fx.Provide(usecase.NewAnalyzeSourceCodeUsecase),
 		fx.Provide(usecase.NewGetBranchUseCase),
 		fx.Provide(usecase.NewGetPipelineTemplateUsecase),
+		fx.Provide(usecase.NewCreatePipelineUsecase),
 
 		//Provide service
 		fx.Provide(service.NewIntegrationService),
 		fx.Provide(service.NewRepositoryService),
 		fx.Provide(service.NewProjectService),
+		fx.Provide(service.NewPipelineService),
 
 		//Provide controller
 		fx.Provide(controller.NewIntegrationController),
 		fx.Provide(controller.NewRepositoryController),
 		fx.Provide(controller.NewProjectController),
+		fx.Provide(controller.NewPipelineController),
 
 		// Provide gin http server auto config,
 		// actuator endpoints and application routers
