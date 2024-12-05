@@ -31,6 +31,31 @@ type ThirdPartyToolAdapter struct {
 	props      *properties.BuddyProperties
 }
 
+func (t ThirdPartyToolAdapter) RunExecution(ctx context.Context, project string, pipelineID int64) (*response2.ExecutionResponse, error) {
+	httpClient := resty.New()
+	req := request2.BuddyRunExecutionRequest{
+		ToRevision: request2.ToRevision{
+			Revision: "HEAD",
+		},
+	}
+
+	var resp response.BuddyExecutionResponse
+	rsp, err := httpClient.R().
+		SetContext(ctx).
+		SetHeader("Authorization", "Bearer "+t.props.AccessToken).
+		SetBody(req).
+		SetResult(&resp).
+		Post(t.props.BaseUrl + fmt.Sprintf(GetListExecutionsPath, DefaultWorkspace, project, pipelineID))
+	if err != nil {
+		log.Error(ctx, "Error when running execution:", err)
+		return nil, err
+	}
+	if rsp.StatusCode() != 201 {
+		log.Error(ctx, "Run execution failed with status:", rsp.StatusCode())
+	}
+	return response.ToExecutionDetail(&resp), nil
+}
+
 func (t ThirdPartyToolAdapter) GetExecutionDetail(ctx context.Context, project string, pipelineID, executionID int64) (*response2.ExecutionResponse, error) {
 	httpClient := resty.New()
 	var resp response.BuddyExecutionResponse

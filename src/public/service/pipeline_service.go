@@ -12,11 +12,17 @@ type IPipelineService interface {
 	GetListPipelineByProjectID(ctx context.Context, projectID int64) ([]*entity.PipelineEntity, error)
 	GetListExecutions(ctx context.Context, projectID, pipelineID int64) (*response.ThirdPartyListExecutionResponse, error)
 	GetExecutionDetailByID(ctx context.Context, projectID, pipelineID, executionID int64) (*response.ExecutionResponse, error)
+	RunExecution(ctx context.Context, projectID, pipelineID int64) (*response.ExecutionResponse, error)
 }
 type PipelineService struct {
 	createPipelineUsecase usecase.ICreatePipelineUsecase
 	getPipelineUseCase    usecase.IGetPipelineUseCase
 	getExecutionUsecase   usecase.IGetExecutionUsecase
+	runExecutionUsecase   usecase.IRunExecutionUsecase
+}
+
+func (p PipelineService) RunExecution(ctx context.Context, projectID, pipelineID int64) (*response.ExecutionResponse, error) {
+	return p.runExecutionUsecase.RunExecution(ctx, projectID, pipelineID)
 }
 
 func (p PipelineService) GetExecutionDetailByID(ctx context.Context, projectID, pipelineID, executionID int64) (*response.ExecutionResponse, error) {
@@ -35,10 +41,11 @@ func (p PipelineService) CreateNewPipeline(ctx context.Context, projectID int64,
 	return p.createPipelineUsecase.CreateNewPipeline(ctx, projectID, pipeline)
 }
 
-func NewPipelineService(createPipelineUsecase usecase.ICreatePipelineUsecase, getPipelineUseCase usecase.IGetPipelineUseCase, getExecutionUsecase usecase.IGetExecutionUsecase) IPipelineService {
+func NewPipelineService(createPipelineUsecase usecase.ICreatePipelineUsecase, getPipelineUseCase usecase.IGetPipelineUseCase, getExecutionUsecase usecase.IGetExecutionUsecase, runExecutionUsecase usecase.IRunExecutionUsecase) IPipelineService {
 	return &PipelineService{
 		createPipelineUsecase: createPipelineUsecase,
 		getPipelineUseCase:    getPipelineUseCase,
 		getExecutionUsecase:   getExecutionUsecase,
+		runExecutionUsecase:   runExecutionUsecase,
 	}
 }

@@ -12,4 +12,5 @@ type IThirdPartyToolPort interface {
 	GetListPipeline(ctx context.Context, project string) ([]*entity.PipelineEntity, error)
 	GetListExecutions(ctx context.Context, project string, pipelineID int64) (*response.ThirdPartyListExecutionResponse, error)
 	GetExecutionDetail(ctx context.Context, project string, pipelineID, executionID int64) (*response.ExecutionResponse, error)
+	RunExecution(ctx context.Context, project string, pipelineID int64) (*response.ExecutionResponse, error)
 }

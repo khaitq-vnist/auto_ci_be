@@ -94,6 +94,27 @@ func (p PipelineController) GetExecutionDetail(c *gin.Context) {
 	}
 	apihelper.SuccessfulHandle(c, result)
 }
+func (p PipelineController) RunExecution(c *gin.Context) {
+	projectId, err := strconv.ParseInt(c.Param("projectId"), 10, 64)
+	if err != nil {
+		log.Error(c, "parse projectID error", err)
+		apihelper.AbortErrorHandle(c, common.GeneralBadRequest)
+		return
+	}
+	pipelineId, err := strconv.ParseInt(c.Param("pipelineId"), 10, 64)
+	if err != nil {
+		log.Error(c, "parse pipelineID error", err)
+		apihelper.AbortErrorHandle(c, common.GeneralBadRequest)
+		return
+	}
+	result, err := p.pipelineService.RunExecution(c, projectId, pipelineId)
+	if err != nil {
+		log.Error(c, "run execution error", err)
+		apihelper.AbortErrorHandle(c, common.GeneralServiceUnavailable)
+		return
+	}
+	apihelper.SuccessfulHandle(c, result)
+}
 func NewPipelineController(pipelineService service.IPipelineService) *PipelineController {
 	return &PipelineController{
 		pipelineService: pipelineService,
