@@ -13,12 +13,18 @@ type IPipelineService interface {
 	GetListExecutions(ctx context.Context, projectID, pipelineID int64) (*response.ThirdPartyListExecutionResponse, error)
 	GetExecutionDetailByID(ctx context.Context, projectID, pipelineID, executionID int64) (*response.ExecutionResponse, error)
 	RunExecution(ctx context.Context, projectID, pipelineID int64) (*response.ExecutionResponse, error)
+	DeletePipelineByID(ctx context.Context, projectID, pipelineID int64) error
 }
 type PipelineService struct {
 	createPipelineUsecase usecase.ICreatePipelineUsecase
 	getPipelineUseCase    usecase.IGetPipelineUseCase
 	getExecutionUsecase   usecase.IGetExecutionUsecase
 	runExecutionUsecase   usecase.IRunExecutionUsecase
+	deletePipelineUsecase usecase.IDeletePipelineUsecase
+}
+
+func (p PipelineService) DeletePipelineByID(ctx context.Context, projectID, pipelineID int64) error {
+	return p.deletePipelineUsecase.DeletePipeline(ctx, projectID, pipelineID)
 }
 
 func (p PipelineService) RunExecution(ctx context.Context, projectID, pipelineID int64) (*response.ExecutionResponse, error) {
@@ -41,11 +47,12 @@ func (p PipelineService) CreateNewPipeline(ctx context.Context, projectID int64,
 	return p.createPipelineUsecase.CreateNewPipeline(ctx, projectID, pipeline)
 }
 
-func NewPipelineService(createPipelineUsecase usecase.ICreatePipelineUsecase, getPipelineUseCase usecase.IGetPipelineUseCase, getExecutionUsecase usecase.IGetExecutionUsecase, runExecutionUsecase usecase.IRunExecutionUsecase) IPipelineService {
+func NewPipelineService(createPipelineUsecase usecase.ICreatePipelineUsecase, getPipelineUseCase usecase.IGetPipelineUseCase, getExecutionUsecase usecase.IGetExecutionUsecase, runExecutionUsecase usecase.IRunExecutionUsecase, deletePipelineUsecase usecase.IDeletePipelineUsecase) IPipelineService {
 	return &PipelineService{
 		createPipelineUsecase: createPipelineUsecase,
 		getPipelineUseCase:    getPipelineUseCase,
 		getExecutionUsecase:   getExecutionUsecase,
 		runExecutionUsecase:   runExecutionUsecase,
+		deletePipelineUsecase: deletePipelineUsecase,
 	}
 }

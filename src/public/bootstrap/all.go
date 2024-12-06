@@ -77,6 +77,7 @@ func All() fx.Option {
 		fx.Provide(usecase.NewGetPipelineUseCase),
 		fx.Provide(usecase.NewGetExecutionUsecase),
 		fx.Provide(usecase.NewRunExecutionUsecase),
+		fx.Provide(usecase.NewDeletePipelineUsecase),
 
 		//Provide service
 		fx.Provide(service.NewIntegrationService),
