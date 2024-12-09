@@ -33,3 +33,11 @@ app:
           topic: auto-ci-service-logs-topic
           groupId: auto-ci-service-logs-topic.UploadFileLogsHandler.local
           enable: true
+  services:
+    buddy:
+      BaseUrl: https://api.buddy.works
+      AccessToken: ${BUDDY_ACCESS_TOKEN}
+    gcs:
+      ProjectID: "cross-platform-service"
+      Bucket: "auto_ci_service"
+      CredentialJSON: ${GCS_CREDENTIALS_JSON}

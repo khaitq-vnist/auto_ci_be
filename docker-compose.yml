@@ -41,6 +41,15 @@ services:
         - auto-ci-zookeeper
       networks:
         - auto-ci-network
+  auto-ci-trivy:
+    image: aquasec/trivy:latest
+    container_name: trivy-api
+    ports:
+      - "8083:8080" # Exposing Trivy API on port 8083
+    command: server --listen 0.0.0.0:8080
+    restart: unless-stopped
+    volumes:
+      - $HOME/.cache:/root/.cache # Optional: Cache vulnerabilities for faster subsequent scans
 
 networks:
     auto-ci-network:

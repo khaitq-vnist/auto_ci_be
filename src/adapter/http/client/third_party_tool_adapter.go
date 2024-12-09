@@ -24,7 +24,7 @@ var (
 	GetListPipelinePath   = "/workspaces/%s/projects/%s/pipelines"
 	GetListExecutionsPath = "/workspaces/%s/projects/%s/pipelines/%d/executions"
 	GetExecutionDetail    = "/workspaces/%s/projects/%s/pipelines/%d/executions/%d"
-	GetExecutionLog       = "/workspaces/%s/projects/%s/pipelines/%d/executions/%d/actions/%d"
+	GetExecutionLog       = "/workspaces/%s/projects/%s/pipelines/%d/executions/%d/action/%d"
 )
 
 type ThirdPartyToolAdapter struct {

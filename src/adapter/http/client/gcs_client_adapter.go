@@ -26,11 +26,15 @@ func (g GCSClientAdapter) UploadFile(ctx context.Context, fullPath, logData stri
 		}
 	}(client)
 	bucket := client.Bucket(g.props.Bucket)
-	object := bucket.Object(fullPath)
+	object := bucket.Object(g.props.ProjectID + "/" + fullPath)
 	writer := object.NewWriter(ctx)
 	writer.ContentType = "text/plain"
 	if _, err = writer.Write([]byte(logData)); err != nil {
 		log.Error(ctx, "Error while writing file to GCloud", err)
+		return err
+	}
+	if err = writer.Close(); err != nil {
+		log.Error(ctx, "Error while closing writer", err)
 		return err
 	}
 	log.Info(ctx, "Upload file to GCloud successfully")

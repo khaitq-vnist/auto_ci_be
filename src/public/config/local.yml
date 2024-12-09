@@ -23,8 +23,8 @@ app:
         pLzetqErEg73L93r7DdnSc4O55qTrRxXMWE+pRx1jWAFdcQL0kZ1TJf/OnNXKKHw
         aQIDAQAB
         -----END PUBLIC KEY-----
-  pubsub:
-    Stub: true
+#  pubsub:
+#    Stub: true
   kafka:
     bootstrapServers: localhost:9092
     clientId: auto-ci-service-public
@@ -57,4 +57,5 @@ app:
     buddy:
       BaseUrl: https://api.buddy.works
       AccessToken: ${BUDDY_ACCESS_TOKEN}
+
 
