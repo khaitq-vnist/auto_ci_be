@@ -19,6 +19,7 @@ type RegisterRoutersIn struct {
 	RepositoryController  *controller.RepositoryController
 	ProjectController     *controller.ProjectController
 	PipelineController    *controller.PipelineController
+	WebHookController     *controller.WebHookController
 }
 
 func RegisterGinRouters(p RegisterRoutersIn) {
@@ -68,5 +69,9 @@ func RegisterGinRouters(p RegisterRoutersIn) {
 	v1PipelineGroup := group.Group("/v1/pipelines")
 	{
 		v1PipelineGroup.POST("", p.PipelineController.CreatePipeline)
+	}
+	v1WebHookGroup := group.Group("/v1/webhooks")
+	{
+		v1WebHookGroup.GET("/upload-logs/projects/:projectId/pipelines/:pipelineId/executions/:executionId", p.WebHookController.HandleUploadFileLogs)
 	}
 }

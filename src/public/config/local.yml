@@ -23,6 +23,32 @@ app:
         pLzetqErEg73L93r7DdnSc4O55qTrRxXMWE+pRx1jWAFdcQL0kZ1TJf/OnNXKKHw
         aQIDAQAB
         -----END PUBLIC KEY-----
+  pubsub:
+    Stub: true
+  kafka:
+    bootstrapServers: localhost:9092
+    clientId: auto-ci-service-public
+    admin:
+      topics:
+        - name: auto-ci-service-logs-topic
+          partitions: 1
+          replicationFactor: 1
+          retention: 72h
+        - name: auto-ci-http-request-topic
+          partitions: 1
+          replicationFactor: 1
+          retention: 72h
+    producer:
+      flushMessages: 1
+      flushFrequency: 1s
+      eventMappings:
+        UploadFileLogsEvent:
+            topicName: auto-ci-service-logs-topic
+            transactional: false
+        RequestCompletedEvent:
+          topicName: auto-ci-http-request-topic
+          transactional: false
+
   services:
     github:
       BaseURL: https://api.github.com

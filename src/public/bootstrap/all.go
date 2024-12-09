@@ -4,9 +4,11 @@ import (
 	"github.com/golibs-starter/golib"
 	golibdata "github.com/golibs-starter/golib-data"
 	golibgin "github.com/golibs-starter/golib-gin"
+	golibmsg "github.com/golibs-starter/golib-message-bus"
 	golibsec "github.com/golibs-starter/golib-security"
 	"github.com/khaitq-vnist/auto_ci_be/adapter/http/client"
 	"github.com/khaitq-vnist/auto_ci_be/adapter/properties"
+	"github.com/khaitq-vnist/auto_ci_be/adapter/publisher"
 	"github.com/khaitq-vnist/auto_ci_be/adapter/repository/postgres"
 	properties2 "github.com/khaitq-vnist/auto_ci_be/core/properties"
 	"github.com/khaitq-vnist/auto_ci_be/core/usecase"
@@ -32,6 +34,9 @@ func All() fx.Option {
 		// Provide datasource auto config
 		golibdata.RedisOpt(),
 		golibdata.DatasourceOpt(),
+		golibmsg.KafkaCommonOpt(),
+		golibmsg.KafkaAdminOpt(),
+		golibmsg.KafkaProducerOpt(),
 
 		// Provide http client auto config with contextual http client by default,
 		// Besides, provide an additional wrapper to easy to control security.
@@ -56,6 +61,7 @@ func All() fx.Option {
 		fx.Provide(postgres.NewStageTemplateRepoAdapter),
 		fx.Provide(postgres.NewCommandTemplateRepoAdapter),
 		fx.Provide(postgres.NewVariableTemplateRepoAdapter),
+		fx.Provide(publisher.NewEventPublisherAdapter),
 
 		//Provide client's implements
 		fx.Provide(client.NewGithubProviderClient),
@@ -77,18 +83,22 @@ func All() fx.Option {
 		fx.Provide(usecase.NewGetPipelineUseCase),
 		fx.Provide(usecase.NewGetExecutionUsecase),
 		fx.Provide(usecase.NewRunExecutionUsecase),
+		fx.Provide(usecase.NewUploadLogWebhookUseCase),
+		fx.Provide(usecase.NewFireEventUsecase),
 
 		//Provide service
 		fx.Provide(service.NewIntegrationService),
 		fx.Provide(service.NewRepositoryService),
 		fx.Provide(service.NewProjectService),
 		fx.Provide(service.NewPipelineService),
+		fx.Provide(service.NewWebhookService),
 
 		//Provide controller
 		fx.Provide(controller.NewIntegrationController),
 		fx.Provide(controller.NewRepositoryController),
 		fx.Provide(controller.NewProjectController),
 		fx.Provide(controller.NewPipelineController),
+		fx.Provide(controller.NewWebHookController),
 
 		// Provide gin http server auto config,
 		// actuator endpoints and application routers
