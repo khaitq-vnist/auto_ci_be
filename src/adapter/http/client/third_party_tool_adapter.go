@@ -24,12 +24,30 @@ var (
 	GetListPipelinePath   = "/workspaces/%s/projects/%s/pipelines"
 	GetListExecutionsPath = "/workspaces/%s/projects/%s/pipelines/%d/executions"
 	GetExecutionDetail    = "/workspaces/%s/projects/%s/pipelines/%d/executions/%d"
+	DeletePipelinePath    = "/workspaces/%s/projects/%s/pipelines/%d"
 	GetExecutionLog       = "/workspaces/%s/projects/%s/pipelines/%d/executions/%d/action/%d"
 )
 
 type ThirdPartyToolAdapter struct {
 	httpClient client.ContextualHttpClient
 	props      *properties.BuddyProperties
+}
+
+func (t ThirdPartyToolAdapter) DeletePipelineById(ctx context.Context, project string, pipelineID int64) error {
+	httpClient := resty.New()
+	rsp, err := httpClient.R().
+		SetContext(ctx).
+		SetHeader("Authorization", "Bearer "+t.props.AccessToken).
+		Delete(t.props.BaseUrl + fmt.Sprintf(DeletePipelinePath, DefaultWorkspace, project, pipelineID))
+	if err != nil {
+		log.Error(ctx, "Error when deleting pipeline:", err)
+		return err
+	}
+	if rsp.StatusCode() != 204 {
+		log.Error(ctx, "Delete pipeline failed with status:", rsp.StatusCode())
+		return fmt.Errorf("failed to delete pipeline, status code: %d", rsp.StatusCode())
+	}
+	return nil
 }
 
 func (t ThirdPartyToolAdapter) GetDetailLog(ctx context.Context, project string, pipelineID, executionID, actionId int64) (*response2.DetailActionLog, error) {

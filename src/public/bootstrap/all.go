@@ -85,6 +85,7 @@ func All() fx.Option {
 		fx.Provide(usecase.NewRunExecutionUsecase),
 		fx.Provide(usecase.NewUploadLogWebhookUseCase),
 		fx.Provide(usecase.NewFireEventUsecase),
+		fx.Provide(usecase.NewDeletePipelineUsecase),
 
 		//Provide service
 		fx.Provide(service.NewIntegrationService),
