@@ -14,4 +14,5 @@ type IThirdPartyToolPort interface {
 	GetExecutionDetail(ctx context.Context, project string, pipelineID, executionID int64) (*response.ExecutionResponse, error)
 	RunExecution(ctx context.Context, project string, pipelineID int64) (*response.ExecutionResponse, error)
 	DeletePipelineById(ctx context.Context, project string, pipelineID int64) error
+	GetDetailLog(ctx context.Context, project string, pipelineID, executionID, actionId int64) (*response.DetailActionLog, error)
 }

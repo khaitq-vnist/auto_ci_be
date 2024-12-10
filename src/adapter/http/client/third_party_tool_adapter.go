@@ -25,6 +25,7 @@ var (
 	GetListExecutionsPath = "/workspaces/%s/projects/%s/pipelines/%d/executions"
 	GetExecutionDetail    = "/workspaces/%s/projects/%s/pipelines/%d/executions/%d"
 	DeletePipelinePath    = "/workspaces/%s/projects/%s/pipelines/%d"
+	GetExecutionLog       = "/workspaces/%s/projects/%s/pipelines/%d/executions/%d/action/%d"
 )
 
 type ThirdPartyToolAdapter struct {
@@ -47,6 +48,25 @@ func (t ThirdPartyToolAdapter) DeletePipelineById(ctx context.Context, project s
 		return fmt.Errorf("failed to delete pipeline, status code: %d", rsp.StatusCode())
 	}
 	return nil
+}
+
+func (t ThirdPartyToolAdapter) GetDetailLog(ctx context.Context, project string, pipelineID, executionID, actionId int64) (*response2.DetailActionLog, error) {
+	httpClient := resty.New()
+	var resp response.BuddyActionExecution
+	rsp, err := httpClient.R().
+		SetContext(ctx).
+		SetHeader("Authorization", "Bearer "+t.props.AccessToken).
+		SetResult(&resp).
+		Get(t.props.BaseUrl + fmt.Sprintf(GetExecutionLog, DefaultWorkspace, project, pipelineID, executionID, actionId))
+	if err != nil {
+		log.Error(ctx, "Error when getting detail log:", err)
+		return nil, err
+	}
+	if rsp.StatusCode() != 200 {
+		log.Error(ctx, "Get detail log failed with status:", rsp.StatusCode())
+		return nil, fmt.Errorf("failed to get detail log, status code: %d", rsp.StatusCode())
+	}
+	return response.ToDetailLogRsp(&resp), nil
 }
 
 func (t ThirdPartyToolAdapter) RunExecution(ctx context.Context, project string, pipelineID int64) (*response2.ExecutionResponse, error) {

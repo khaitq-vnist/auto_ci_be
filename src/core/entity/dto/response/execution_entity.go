@@ -17,6 +17,14 @@ type ExecutionResponse struct {
 	Branch           *ExecutionBranchResponse `json:"branch"`
 	ActionExecutions []*ActionExecution       `json:"action_executions,omitempty"`
 }
+type DetailActionLog struct {
+	Status     string   `json:"status"`
+	Process    float32  `json:"process"`
+	Action     Action   `json:"action"`
+	StartDate  int64    `json:"start_date"`
+	FinishDate int64    `json:"finish_date"`
+	Log        []string `json:"log"`
+}
 type ExecutionBranchResponse struct {
 	Name    string `json:"name"`
 	Default bool   `json:"default"`

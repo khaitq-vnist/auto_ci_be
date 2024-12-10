@@ -12,9 +12,8 @@ import (
 	"github.com/khaitq-vnist/auto_ci_be/adapter/repository/postgres"
 	properties2 "github.com/khaitq-vnist/auto_ci_be/core/properties"
 	"github.com/khaitq-vnist/auto_ci_be/core/usecase"
-	"github.com/khaitq-vnist/auto_ci_be/public/controller"
-	"github.com/khaitq-vnist/auto_ci_be/public/router"
-	"github.com/khaitq-vnist/auto_ci_be/public/service"
+	"github.com/khaitq-vnist/auto_ci_be/worker/handler"
+	"github.com/khaitq-vnist/auto_ci_be/worker/router"
 	"go.uber.org/fx"
 )
 
@@ -27,27 +26,22 @@ func All() fx.Option {
 		golib.BuildInfoOpt(Version, CommitHash, BuildTime),
 		golib.ActuatorEndpointOpt(),
 		golib.HttpRequestLogOpt(),
-
-		// Http security auto config and authentication filters
-		golibsec.HttpSecurityOpt(),
-		golibsec.JwtAuthFilterOpt(),
-		// Provide datasource auto config
-		golibdata.RedisOpt(),
-		golibdata.DatasourceOpt(),
-		golibmsg.KafkaCommonOpt(),
-		golibmsg.KafkaAdminOpt(),
-		golibmsg.KafkaProducerOpt(),
-
-		// Provide http client auto config with contextual http client by default,
-		// Besides, provide an additional wrapper to easy to control security.
 		golib.HttpClientOpt(),
 		golibsec.SecuredHttpClientOpt(),
+
+		golibdata.RedisOpt(),
+		golibdata.DatasourceOpt(),
+
+		golibmsg.KafkaCommonOpt(),
+		golibmsg.KafkaAdminOpt(),
+		golibmsg.KafkaConsumerOpt(),
 
 		//Provide properties
 		//golib.ProvideProps(properties.NewGitlabProperties),
 		golib.ProvideProps(properties.NewGithubProperties),
 		golib.ProvideProps(properties2.NewEncryptProperties),
 		golib.ProvideProps(properties.NewBuddyProperties),
+		golib.ProvideProps(properties.NewGCSProperties),
 
 		//Provide port's implements
 		fx.Provide(postgres.NewBaseRepository),
@@ -56,16 +50,11 @@ func All() fx.Option {
 		fx.Provide(postgres.NewIntegrationRepositoryAdapter),
 		fx.Provide(client.NewThirdPartyProviderAdapter),
 		fx.Provide(postgres.NewProjectRepositoryAdapter),
-		fx.Provide(postgres.NewPipelineTemplateRepositoryAdapter),
-		fx.Provide(postgres.NewPipelineStageTemplateRepoAdapter),
-		fx.Provide(postgres.NewStageTemplateRepoAdapter),
-		fx.Provide(postgres.NewCommandTemplateRepoAdapter),
-		fx.Provide(postgres.NewVariableTemplateRepoAdapter),
 		fx.Provide(publisher.NewEventPublisherAdapter),
 
-		//Provide client's implements
 		fx.Provide(client.NewGithubProviderClient),
 		fx.Provide(client.NewThirdPartyToolAdapter),
+		fx.Provide(client.NewGCSClientAdapter),
 
 		//Provide usecase
 		fx.Provide(usecase.NewGetThirdPartyProviderUseCase),
@@ -75,39 +64,17 @@ func All() fx.Option {
 		fx.Provide(usecase.NewGetIntegrationUseCase),
 		fx.Provide(usecase.NewGetRepositoryUseCase),
 		fx.Provide(usecase.NewGetProjectUseCase),
-		fx.Provide(usecase.NewCreateProjectUseCase),
-		fx.Provide(usecase.NewAnalyzeSourceCodeUsecase),
-		fx.Provide(usecase.NewGetBranchUseCase),
-		fx.Provide(usecase.NewGetPipelineTemplateUsecase),
-		fx.Provide(usecase.NewCreatePipelineUsecase),
-		fx.Provide(usecase.NewGetPipelineUseCase),
-		fx.Provide(usecase.NewGetExecutionUsecase),
-		fx.Provide(usecase.NewRunExecutionUsecase),
 		fx.Provide(usecase.NewUploadLogWebhookUseCase),
 		fx.Provide(usecase.NewFireEventUsecase),
-		fx.Provide(usecase.NewDeletePipelineUsecase),
+		fx.Provide(usecase.NewUploadFileLogUseCase),
 
-		//Provide service
-		fx.Provide(service.NewIntegrationService),
-		fx.Provide(service.NewRepositoryService),
-		fx.Provide(service.NewProjectService),
-		fx.Provide(service.NewPipelineService),
-		fx.Provide(service.NewWebhookService),
-
-		//Provide controller
-		fx.Provide(controller.NewIntegrationController),
-		fx.Provide(controller.NewRepositoryController),
-		fx.Provide(controller.NewProjectController),
-		fx.Provide(controller.NewPipelineController),
-		fx.Provide(controller.NewWebHookController),
-
-		// Provide gin http server auto config,
-		// actuator endpoints and application routers
 		golibgin.GinHttpServerOpt(),
 		fx.Invoke(router.RegisterGinRouters),
+		//provide Handlers
+		golibmsg.ProvideConsumer(handler.NewUploadFileLogsHandler),
 
-		// Graceful shutdown.
-		// OnStop hooks will run in reverse order.
 		golibgin.OnStopHttpServerOpt(),
+
+		golibmsg.OnStopConsumerOpt(),
 	)
 }

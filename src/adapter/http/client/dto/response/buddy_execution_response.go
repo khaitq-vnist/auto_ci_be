@@ -27,9 +27,12 @@ type BuddyExecutionBranchResponse struct {
 	Default bool   `json:"default"`
 }
 type BuddyActionExecution struct {
-	Status   string      `json:"status"`
-	Progress float32     `json:"progress"`
-	Action   BuddyAction `json:"action"`
+	Status     string      `json:"status"`
+	Progress   float32     `json:"progress"`
+	Action     BuddyAction `json:"action"`
+	StartDate  time.Time   `json:"start_date"`
+	FinishDate time.Time   `json:"finish_date"`
+	Log        []string    `json:"log"`
 }
 type BuddyAction struct {
 	ID                  int       `json:"id"`
@@ -93,5 +96,21 @@ func ToExecutionDetail(rsp *BuddyExecutionResponse) *response.ExecutionResponse 
 			Default: rsp.Branch.Default,
 		},
 		ActionExecutions: actionExecutions,
+	}
+}
+func ToDetailLogRsp(rsp *BuddyActionExecution) *response.DetailActionLog {
+	return &response.DetailActionLog{
+		Status:  rsp.Status,
+		Process: rsp.Progress,
+		Action: response.Action{
+			ID:                  rsp.Action.ID,
+			Name:                rsp.Action.Name,
+			Type:                rsp.Action.Type,
+			TriggerTime:         rsp.Action.TriggerTime,
+			LastExecutionStatus: rsp.Action.LastExecutionStatus,
+		},
+		StartDate:  rsp.StartDate.Unix(),
+		FinishDate: rsp.FinishDate.Unix(),
+		Log:        rsp.Log,
 	}
 }

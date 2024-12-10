@@ -17,3 +17,40 @@ services:
     image: redis:5.0.6
     ports:
       - "6379:6379"
+  auto-ci-zookeeper:
+    container_name: auto_ci_zookeeper
+    image: wurstmeister/zookeeper:latest
+    ports:
+      - "2181:2181"
+    networks:
+      - auto-ci-network
+
+  auto-ci-kafka:
+      container_name: auto_ci_kafka
+      image: wurstmeister/kafka:latest
+      ports:
+        - "9092:9092"
+      environment:
+        KAFKA_ZOOKEEPER_CONNECT: auto_ci_zookeeper:2181
+        KAFKA_ADVERTISED_HOST_NAME: "localhost"
+        KAFKA_LISTENERS: "PLAINTEXT://:9092"
+        KAFKA_BROKER_ID: 1
+        KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+        KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      depends_on:
+        - auto-ci-zookeeper
+      networks:
+        - auto-ci-network
+  auto-ci-trivy:
+    image: aquasec/trivy:latest
+    container_name: trivy-api
+    ports:
+      - "8083:8080" # Exposing Trivy API on port 8083
+    command: server --listen 0.0.0.0:8080
+    restart: unless-stopped
+    volumes:
+      - $HOME/.cache:/root/.cache # Optional: Cache vulnerabilities for faster subsequent scans
+
+networks:
+    auto-ci-network:
+      driver: bridge

@@ -1,4 +1,4 @@
-module github.com/khaitq-vnist/auto_ci_be/public
+module github.com/khaitq-vnist/auto_ci_be/worker
 
 go 1.21.0
 
@@ -8,7 +8,6 @@ replace (
 )
 
 require (
-	github.com/gin-contrib/cors v1.7.2
 	github.com/gin-gonic/gin v1.10.0
 	github.com/golibs-starter/golib v1.0.1
 	github.com/golibs-starter/golib-data v1.0.0
@@ -17,7 +16,7 @@ require (
 	github.com/golibs-starter/golib-security v1.0.0
 	github.com/khaitq-vnist/auto_ci_be/adapter v0.0.0-00010101000000-000000000000
 	github.com/khaitq-vnist/auto_ci_be/core v0.0.0-00010101000000-000000000000
-	go.uber.org/fx v1.20.0
+	go.uber.org/fx v1.23.0
 )
 
 require (
@@ -95,7 +94,7 @@ require (
 	github.com/ugorji/go/codec v1.2.12 // indirect
 	github.com/zenthangplus/defaults v1.6.2-beta // indirect
 	go.opencensus.io v0.24.0 // indirect
-	go.uber.org/dig v1.17.0 // indirect
+	go.uber.org/dig v1.18.0 // indirect
 	go.uber.org/multierr v1.10.0 // indirect
 	go.uber.org/zap v1.26.0 // indirect
 	golang.org/x/arch v0.8.0 // indirect
