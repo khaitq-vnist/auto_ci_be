@@ -8,11 +8,14 @@ const (
 
 	// GeneralBadRequest General
 	GeneralBadRequest = 400
+
+	ExistedEmailCode = 400001
 )
 
-const ()
-
-const ()
+const (
+	// ExistedEmailMessage message
+	ExistedEmailMessage = "Email is existed"
+)
 
 // ErrorResponse error response struct
 type ErrorResponse struct {
@@ -31,6 +34,11 @@ var errorResponseMap = map[int]ErrorResponse{
 		HTTPCode:    http.StatusBadRequest,
 		ServiceCode: GeneralBadRequest,
 		Message:     "Bad request",
+	},
+	ExistedEmailCode: {
+		HTTPCode:    http.StatusBadRequest,
+		ServiceCode: ExistedEmailCode,
+		Message:     ExistedEmailMessage,
 	},
 }
 
