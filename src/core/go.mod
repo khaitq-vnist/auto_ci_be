@@ -3,7 +3,9 @@ module github.com/khaitq-vnist/auto_ci_be/core
 go 1.21.0
 
 require (
+	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/golibs-starter/golib v1.0.1
+	golang.org/x/crypto v0.9.0
 	gorm.io/gorm v1.25.12
 )
 
@@ -32,7 +34,6 @@ require (
 	github.com/zenthangplus/defaults v1.6.2-beta // indirect
 	go.uber.org/multierr v1.10.0 // indirect
 	go.uber.org/zap v1.26.0 // indirect
-	golang.org/x/crypto v0.9.0 // indirect
 	golang.org/x/net v0.10.0 // indirect
 	golang.org/x/sys v0.8.0 // indirect
 	golang.org/x/text v0.14.0 // indirect

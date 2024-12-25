@@ -20,6 +20,7 @@ type RegisterRoutersIn struct {
 	ProjectController     *controller.ProjectController
 	PipelineController    *controller.PipelineController
 	WebHookController     *controller.WebHookController
+	UserController        *controller.UserController
 }
 
 func RegisterGinRouters(p RegisterRoutersIn) {
@@ -44,7 +45,11 @@ func RegisterGinRouters(p RegisterRoutersIn) {
 	group := p.Engine.Group(p.App.Path())
 	group.GET("/actuator/health", gin.WrapF(p.Actuator.Health))
 	group.GET("/actuator/info", gin.WrapF(p.Actuator.Info))
-
+	v1UserGroup := group.Group("/v1/auth")
+	{
+		v1UserGroup.POST("/sign-up", p.UserController.CreateUser)
+		v1UserGroup.POST("/login", p.UserController.LoginUser)
+	}
 	v1IntegrationGroup := group.Group("/v1/integrations")
 	{
 		v1IntegrationGroup.POST("", p.IntegrationController.CreateIntegration)

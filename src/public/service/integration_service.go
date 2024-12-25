@@ -8,7 +8,7 @@ import (
 )
 
 type IIntegrationService interface {
-	CreateIntegration(c context.Context, request *request.CreateIntegrationRequest) error
+	CreateIntegration(c context.Context, userID int64, request *request.CreateIntegrationRequest) error
 	GetIntegrationByUserId(c context.Context, userId int64) ([]*entity.IntegrationEntity, error)
 }
 
@@ -21,9 +21,9 @@ func (i *IntegrationService) GetIntegrationByUserId(c context.Context, userId in
 	return i.getIntegrationUseCase.GetListIntegrationByUserId(c, userId)
 }
 
-func (i *IntegrationService) CreateIntegration(c context.Context, request *request.CreateIntegrationRequest) error {
+func (i *IntegrationService) CreateIntegration(c context.Context, userID int64, request *request.CreateIntegrationRequest) error {
 	integrationEntity := request.ToEntity()
-	integrationEntity.UserId = 1
+	integrationEntity.UserId = userID
 	_, err := i.createIntegrationUseCase.CreateIntegration(&c, integrationEntity)
 	return err
 }

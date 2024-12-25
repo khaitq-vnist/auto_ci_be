@@ -7,13 +7,13 @@ import (
 )
 
 type IGetThirdPartyProviderUseCase interface {
-	GetUserInfo(ctx *context.Context, provider string, token string) (*response.ThirdPartyProviderUserInfoResponse, error)
+	GetUserInfo(ctx context.Context, provider string, token string) (*response.ThirdPartyProviderUserInfoResponse, error)
 }
 type GetThirdPartyProviderUseCase struct {
 	thirdPartyProviderPort port.IThirdPartyProviderPort
 }
 
-func (g GetThirdPartyProviderUseCase) GetUserInfo(ctx *context.Context, provider string, token string) (*response.ThirdPartyProviderUserInfoResponse, error) {
+func (g GetThirdPartyProviderUseCase) GetUserInfo(ctx context.Context, provider string, token string) (*response.ThirdPartyProviderUserInfoResponse, error) {
 	return g.thirdPartyProviderPort.GetUserInfo(ctx, provider, token)
 }
 

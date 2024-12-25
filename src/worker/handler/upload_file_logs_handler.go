@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"github.com/golibs-starter/golib-message-bus/kafka/core"
 	"github.com/golibs-starter/golib/log"
-	"github.com/khaitq-vnist/auto_ci_be/core/constanst"
+	"github.com/khaitq-vnist/auto_ci_be/core/constant"
 	"github.com/khaitq-vnist/auto_ci_be/core/event"
 	"github.com/khaitq-vnist/auto_ci_be/core/usecase"
 )
@@ -20,7 +20,7 @@ func (u UploadFileLogsHandler) HandlerFunc(message *core.ConsumerMessage) {
 		log.Error("[UploadFileLogsHandler] Error when unmarshal event message, detail: ", err)
 		return
 	}
-	if e.AbstractEvent == nil || e.AbstractEvent.ApplicationEvent == nil || e.AbstractEvent.Event != constanst.UploadFileLogsEvent || e.PayloadData == nil {
+	if e.AbstractEvent == nil || e.AbstractEvent.ApplicationEvent == nil || e.AbstractEvent.Event != constant.UploadFileLogsEvent || e.PayloadData == nil {
 		if message == nil {
 			log.Info("[UploadFileLogsHandler] message is nil")
 			return

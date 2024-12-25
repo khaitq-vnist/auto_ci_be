@@ -7,14 +7,14 @@ import (
 )
 
 type IGetProviderUseCase interface {
-	GetProviderByCode(ctx *context.Context, code string) (*entity.ProviderEntity, error)
+	GetProviderByCode(ctx context.Context, code string) (*entity.ProviderEntity, error)
 }
 type GetProviderUseCase struct {
 	providerPort port.IProviderPort
 }
 
-func (g *GetProviderUseCase) GetProviderByCode(ctx *context.Context, code string) (*entity.ProviderEntity, error) {
-	return g.providerPort.GetProviderByCode(*ctx, code)
+func (g *GetProviderUseCase) GetProviderByCode(ctx context.Context, code string) (*entity.ProviderEntity, error) {
+	return g.providerPort.GetProviderByCode(ctx, code)
 }
 
 func NewGetProviderUseCase(providerPort port.IProviderPort) IGetProviderUseCase {

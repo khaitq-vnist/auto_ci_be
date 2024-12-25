@@ -14,10 +14,6 @@ import (
 	"github.com/khaitq-vnist/auto_ci_be/core/port"
 )
 
-const (
-	DefaultWorkspace = "testworkspace-10"
-)
-
 var (
 	CreateNewPipelinePath = "/workspaces/%s/projects/%s/pipelines"
 	CreateNewActionPath   = "/workspaces/%s/projects/%s/pipelines/%d/actions"
@@ -26,6 +22,7 @@ var (
 	GetExecutionDetail    = "/workspaces/%s/projects/%s/pipelines/%d/executions/%d"
 	DeletePipelinePath    = "/workspaces/%s/projects/%s/pipelines/%d"
 	GetExecutionLog       = "/workspaces/%s/projects/%s/pipelines/%d/executions/%d/action/%d"
+	CreateIntegrationPath = "/workspaces/%s/integrations"
 )
 
 type ThirdPartyToolAdapter struct {
@@ -33,12 +30,33 @@ type ThirdPartyToolAdapter struct {
 	props      *properties.BuddyProperties
 }
 
+func (t ThirdPartyToolAdapter) CreateIntegration(ctx context.Context, integration *entity.IntegrationEntity) (*response2.ThirdPartyCreateIntegrationResponse, error) {
+	httpClient := resty.New()
+	request := request2.ToBuddyCreateIntegrationRequest(integration)
+	var resp response.BuddyIntegrationResponse
+	rsp, err := httpClient.R().
+		SetContext(ctx).
+		SetHeader("Authorization", "Bearer "+t.props.AccessToken).
+		SetBody(request).
+		SetResult(&resp).
+		Post(t.props.BaseUrl + fmt.Sprintf(CreateIntegrationPath, t.props.Workspace))
+	if err != nil {
+		log.Error(ctx, "Error when creating integration:", err)
+		return nil, err
+	}
+	if rsp.StatusCode() != 201 {
+		log.Error(ctx, "Create integration failed with status:", rsp.StatusCode())
+		return nil, fmt.Errorf("failed to create integration, status code: %d", rsp.StatusCode())
+	}
+	return response.ToIntegrationResponseDto(&resp), nil
+}
+
 func (t ThirdPartyToolAdapter) DeletePipelineById(ctx context.Context, project string, pipelineID int64) error {
 	httpClient := resty.New()
 	rsp, err := httpClient.R().
 		SetContext(ctx).
 		SetHeader("Authorization", "Bearer "+t.props.AccessToken).
-		Delete(t.props.BaseUrl + fmt.Sprintf(DeletePipelinePath, DefaultWorkspace, project, pipelineID))
+		Delete(t.props.BaseUrl + fmt.Sprintf(DeletePipelinePath, t.props.Workspace, project, pipelineID))
 	if err != nil {
 		log.Error(ctx, "Error when deleting pipeline:", err)
 		return err
@@ -57,7 +75,7 @@ func (t ThirdPartyToolAdapter) GetDetailLog(ctx context.Context, project string,
 		SetContext(ctx).
 		SetHeader("Authorization", "Bearer "+t.props.AccessToken).
 		SetResult(&resp).
-		Get(t.props.BaseUrl + fmt.Sprintf(GetExecutionLog, DefaultWorkspace, project, pipelineID, executionID, actionId))
+		Get(t.props.BaseUrl + fmt.Sprintf(GetExecutionLog, t.props.Workspace, project, pipelineID, executionID, actionId))
 	if err != nil {
 		log.Error(ctx, "Error when getting detail log:", err)
 		return nil, err
@@ -83,7 +101,7 @@ func (t ThirdPartyToolAdapter) RunExecution(ctx context.Context, project string,
 		SetHeader("Authorization", "Bearer "+t.props.AccessToken).
 		SetBody(req).
 		SetResult(&resp).
-		Post(t.props.BaseUrl + fmt.Sprintf(GetListExecutionsPath, DefaultWorkspace, project, pipelineID))
+		Post(t.props.BaseUrl + fmt.Sprintf(GetListExecutionsPath, t.props.Workspace, project, pipelineID))
 	if err != nil {
 		log.Error(ctx, "Error when running execution:", err)
 		return nil, err
@@ -101,7 +119,7 @@ func (t ThirdPartyToolAdapter) GetExecutionDetail(ctx context.Context, project s
 		SetContext(ctx).
 		SetHeader("Authorization", "Bearer "+t.props.AccessToken).
 		SetResult(&resp).
-		Get(t.props.BaseUrl + fmt.Sprintf(GetExecutionDetail, DefaultWorkspace, project, pipelineID, executionID))
+		Get(t.props.BaseUrl + fmt.Sprintf(GetExecutionDetail, t.props.Workspace, project, pipelineID, executionID))
 	if err != nil {
 		log.Error(ctx, "Error when getting execution detail:", err)
 		return nil, err
@@ -120,7 +138,7 @@ func (t ThirdPartyToolAdapter) GetListExecutions(ctx context.Context, project st
 		SetContext(ctx).
 		SetHeader("Authorization", "Bearer "+t.props.AccessToken).
 		SetResult(&resp).
-		Get(t.props.BaseUrl + fmt.Sprintf(GetListExecutionsPath, DefaultWorkspace, project, pipelineID))
+		Get(t.props.BaseUrl + fmt.Sprintf(GetListExecutionsPath, t.props.Workspace, project, pipelineID))
 	if err != nil {
 		log.Error(ctx, "Error when getting list of executions:", err)
 		return nil, err
@@ -140,7 +158,7 @@ func (t ThirdPartyToolAdapter) GetListPipeline(ctx context.Context, project stri
 		SetContext(ctx).
 		SetHeader("Authorization", "Bearer "+t.props.AccessToken).
 		SetResult(&resp).
-		Get(t.props.BaseUrl + fmt.Sprintf(GetListPipelinePath, DefaultWorkspace, project))
+		Get(t.props.BaseUrl + fmt.Sprintf(GetListPipelinePath, t.props.Workspace, project))
 
 	if err != nil {
 		log.Error(ctx, "Error when getting list of pipelines:", err)
@@ -166,7 +184,7 @@ func (t ThirdPartyToolAdapter) CreateNewAction(ctx context.Context, project stri
 		SetHeader("Authorization", "Bearer "+t.props.AccessToken).
 		SetBody(request).
 		SetResult(&resp).
-		Post(t.props.BaseUrl + fmt.Sprintf(CreateNewActionPath, DefaultWorkspace, project, pipelineID))
+		Post(t.props.BaseUrl + fmt.Sprintf(CreateNewActionPath, t.props.Workspace, project, pipelineID))
 
 	if err != nil {
 		log.Error(ctx, "Error when creating a new action:", err)
@@ -189,7 +207,7 @@ func (t ThirdPartyToolAdapter) CreateNewPipeline(ctx context.Context, project st
 	httpClient := resty.New()
 
 	// Define the API URL
-	url := t.props.BaseUrl + fmt.Sprintf(CreateNewPipelinePath, DefaultWorkspace, project)
+	url := t.props.BaseUrl + fmt.Sprintf(CreateNewPipelinePath, t.props.Workspace, project)
 
 	// Perform the POST request
 	resp, err := httpClient.R().

@@ -12,14 +12,14 @@ import (
 )
 
 type IEncryptUseCase interface {
-	EncryptToken(ctx *context.Context, token string) (string, error)
-	DecryptToken(ctx *context.Context, token string) (string, error)
+	EncryptToken(ctx context.Context, token string) (string, error)
+	DecryptToken(ctx context.Context, token string) (string, error)
 }
 type EncryptUseCase struct {
 	props *properties.EncryptProperties
 }
 
-func (e *EncryptUseCase) DecryptToken(ctx *context.Context, token string) (string, error) {
+func (e *EncryptUseCase) DecryptToken(ctx context.Context, token string) (string, error) {
 	cipherText, err := base64.URLEncoding.DecodeString(token)
 	if err != nil {
 		log.Error(ctx, "Decrypt token error: %v", err)
@@ -43,7 +43,7 @@ func (e *EncryptUseCase) DecryptToken(ctx *context.Context, token string) (strin
 	return string(cipherText), nil
 }
 
-func (e *EncryptUseCase) EncryptToken(ctx *context.Context, token string) (string, error) {
+func (e *EncryptUseCase) EncryptToken(ctx context.Context, token string) (string, error) {
 	block, err := aes.NewCipher([]byte(e.props.Key))
 	if err != nil {
 		log.Error(ctx, "Encrypt token error: %v", err)

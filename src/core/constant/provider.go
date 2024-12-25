@@ -1,4 +1,4 @@
-package constanst
+package constant
 
 const (
 	GITLAB_PROVIDER = "GITLAB"

@@ -15,4 +15,5 @@ type IThirdPartyToolPort interface {
 	RunExecution(ctx context.Context, project string, pipelineID int64) (*response.ExecutionResponse, error)
 	DeletePipelineById(ctx context.Context, project string, pipelineID int64) error
 	GetDetailLog(ctx context.Context, project string, pipelineID, executionID, actionId int64) (*response.DetailActionLog, error)
+	CreateIntegration(ctx context.Context, integration *entity.IntegrationEntity) (*response.ThirdPartyCreateIntegrationResponse, error)
 }

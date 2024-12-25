@@ -5,7 +5,7 @@ import (
 	"errors"
 	"github.com/golibs-starter/golib/log"
 	"github.com/khaitq-vnist/auto_ci_be/adapter/http/strategy"
-	"github.com/khaitq-vnist/auto_ci_be/core/constanst"
+	"github.com/khaitq-vnist/auto_ci_be/core/constant"
 	"github.com/khaitq-vnist/auto_ci_be/core/entity/dto/response"
 	"github.com/khaitq-vnist/auto_ci_be/core/port"
 )
@@ -70,7 +70,7 @@ func (t *ThirdPartyProviderAdapter) GetListRepositoriesByUser(ctx *context.Conte
 	return repos, nil
 }
 
-func (t *ThirdPartyProviderAdapter) GetUserInfo(ctx *context.Context, provider string, token string) (*response.ThirdPartyProviderUserInfoResponse, error) {
+func (t *ThirdPartyProviderAdapter) GetUserInfo(ctx context.Context, provider string, token string) (*response.ThirdPartyProviderUserInfoResponse, error) {
 	partyStrategy := t.getStrategy(provider)
 	if partyStrategy == nil {
 		log.Error(ctx, "Provider not found", nil)
@@ -87,8 +87,8 @@ func (t *ThirdPartyProviderAdapter) GetUserInfo(ctx *context.Context, provider s
 func NewThirdPartyProviderAdapter(gitHubStrategy strategy.IThirdPartyStrategy,
 	gitLabStrategy strategy.IThirdPartyStrategy) port.IThirdPartyProviderPort {
 	strategies := map[string]strategy.IThirdPartyStrategy{
-		constanst.GITHUB_PROVIDER: gitHubStrategy,
-		constanst.GITLAB_PROVIDER: gitLabStrategy,
+		constant.GITHUB_PROVIDER: gitHubStrategy,
+		constant.GITLAB_PROVIDER: gitLabStrategy,
 	}
 	return &ThirdPartyProviderAdapter{
 		strategies: strategies,

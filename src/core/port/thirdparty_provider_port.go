@@ -6,7 +6,7 @@ import (
 )
 
 type IThirdPartyProviderPort interface {
-	GetUserInfo(ctx *context.Context, provider string, token string) (*response.ThirdPartyProviderUserInfoResponse, error)
+	GetUserInfo(ctx context.Context, provider string, token string) (*response.ThirdPartyProviderUserInfoResponse, error)
 	GetListRepositoriesByUser(ctx *context.Context, provider string, token, username string) ([]*response.ThirdPartyProviderReposResponse, error)
 	GetRepositoryInfo(ctx *context.Context, provider string, token string, repoId int64) (*response.ThirdPartyProviderReposResponse, error)
 

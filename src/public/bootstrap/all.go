@@ -49,6 +49,8 @@ func All() fx.Option {
 		golib.ProvideProps(properties2.NewEncryptProperties),
 		golib.ProvideProps(properties.NewBuddyProperties),
 
+		//Provide core properties
+		golib.ProvideProps(properties2.NewTokenProperties),
 		//Provide port's implements
 		fx.Provide(postgres.NewBaseRepository),
 		fx.Provide(postgres.NewUserRepositoryAdapter),
@@ -62,6 +64,7 @@ func All() fx.Option {
 		fx.Provide(postgres.NewCommandTemplateRepoAdapter),
 		fx.Provide(postgres.NewVariableTemplateRepoAdapter),
 		fx.Provide(publisher.NewEventPublisherAdapter),
+		fx.Provide(postgres.NewDatabaseTransactionAdapter),
 
 		//Provide client's implements
 		fx.Provide(client.NewGithubProviderClient),
@@ -86,6 +89,10 @@ func All() fx.Option {
 		fx.Provide(usecase.NewUploadLogWebhookUseCase),
 		fx.Provide(usecase.NewFireEventUsecase),
 		fx.Provide(usecase.NewDeletePipelineUsecase),
+		fx.Provide(usecase.NewCreateUserUseCase),
+		fx.Provide(usecase.NewGetUserUseCase),
+		fx.Provide(usecase.NewDatabaseTransactionUsecase),
+		fx.Provide(usecase.NewLoginUseCase),
 
 		//Provide service
 		fx.Provide(service.NewIntegrationService),
@@ -93,6 +100,7 @@ func All() fx.Option {
 		fx.Provide(service.NewProjectService),
 		fx.Provide(service.NewPipelineService),
 		fx.Provide(service.NewWebhookService),
+		fx.Provide(service.NewUserService),
 
 		//Provide controller
 		fx.Provide(controller.NewIntegrationController),
@@ -100,6 +108,7 @@ func All() fx.Option {
 		fx.Provide(controller.NewProjectController),
 		fx.Provide(controller.NewPipelineController),
 		fx.Provide(controller.NewWebHookController),
+		fx.Provide(controller.NewUserController),
 
 		// Provide gin http server auto config,
 		// actuator endpoints and application routers

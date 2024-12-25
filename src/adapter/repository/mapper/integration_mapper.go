@@ -19,6 +19,7 @@ func ToIntegrationModel(integrationEntity *entity.IntegrationEntity) *model2.Int
 		ProviderName:     integrationEntity.ProviderName,
 		AccessToken:      integrationEntity.AccessToken,
 		ProviderUsername: integrationEntity.ProviderUsername,
+		ThirdPartyHashId: integrationEntity.ThirdPartyHashId,
 	}
 }
 func ToIntegrationEntity(integrationModel *model2.IntegrationModel) *entity.IntegrationEntity {
@@ -35,6 +36,7 @@ func ToIntegrationEntity(integrationModel *model2.IntegrationModel) *entity.Inte
 		ProviderName:     integrationModel.ProviderName,
 		AccessToken:      integrationModel.AccessToken,
 		ProviderUsername: integrationModel.ProviderUsername,
+		ThirdPartyHashId: integrationModel.ThirdPartyHashId,
 	}
 }
 func ToListIntegrationEntities(integrationModels []*model2.IntegrationModel) []*entity.IntegrationEntity {

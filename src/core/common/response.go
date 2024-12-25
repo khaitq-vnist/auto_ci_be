@@ -7,14 +7,17 @@ const (
 	GeneralServiceUnavailable = 500
 
 	// GeneralBadRequest General
-	GeneralBadRequest = 400
+	GeneralBadRequest   = 400
+	GeneralUnauthorized = 401
 
-	ExistedEmailCode = 400001
+	ExistedEmailCode    = 400001
+	InvalidPasswordCode = 400002
 )
 
 const (
 	// ExistedEmailMessage message
-	ExistedEmailMessage = "Email is existed"
+	ExistedEmailMessage    = "Email is existed"
+	InvalidPasswordMessage = "Invalid email/password"
 )
 
 // ErrorResponse error response struct
@@ -39,6 +42,11 @@ var errorResponseMap = map[int]ErrorResponse{
 		HTTPCode:    http.StatusBadRequest,
 		ServiceCode: ExistedEmailCode,
 		Message:     ExistedEmailMessage,
+	},
+	InvalidPasswordCode: {
+		HTTPCode:    http.StatusBadRequest,
+		ServiceCode: InvalidPasswordCode,
+		Message:     InvalidPasswordMessage,
 	},
 }
 
