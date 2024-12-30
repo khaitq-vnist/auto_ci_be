@@ -48,6 +48,7 @@ app:
     buddy:
       BaseUrl: https://api.buddy.works
       AccessToken: ${BUDDY_ACCESS_TOKEN}
+      Workspace: ${BUDDY_WORKSPACE}
     security:
       http:
         jwt:

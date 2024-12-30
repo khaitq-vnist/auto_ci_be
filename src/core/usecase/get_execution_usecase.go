@@ -20,8 +20,8 @@ func (g GetExecutionUsecase) GetExecutionDetailByID(ctx context.Context, project
 	if err != nil {
 		return nil, err
 	}
-	project.Name = "demo-ci-cd"
-	return g.thirdPartyToolPort.GetExecutionDetail(ctx, project.Name, pipelineID, executionID)
+
+	return g.thirdPartyToolPort.GetExecutionDetail(ctx, project.ThirdPartyProjectID, pipelineID, executionID)
 }
 
 func (g GetExecutionUsecase) GetListExecutions(ctx context.Context, projectId, pipelineID int64) (*response.ThirdPartyListExecutionResponse, error) {
@@ -29,8 +29,8 @@ func (g GetExecutionUsecase) GetListExecutions(ctx context.Context, projectId, p
 	if err != nil {
 		return nil, err
 	}
-	project.Name = "demo-ci-cd"
-	return g.thirdPartyToolPort.GetListExecutions(ctx, project.Name, pipelineID)
+
+	return g.thirdPartyToolPort.GetListExecutions(ctx, project.ThirdPartyProjectID, pipelineID)
 }
 
 func NewGetExecutionUsecase(getProjectUseCase IGetProjectUseCase, thirdPartyToolPort port.IThirdPartyToolPort) IGetExecutionUsecase {

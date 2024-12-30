@@ -48,6 +48,11 @@ var errorResponseMap = map[int]ErrorResponse{
 		ServiceCode: InvalidPasswordCode,
 		Message:     InvalidPasswordMessage,
 	},
+	GeneralUnauthorized: {
+		HTTPCode:    http.StatusUnauthorized,
+		ServiceCode: GeneralUnauthorized,
+		Message:     "Unauthorized",
+	},
 }
 
 // GetErrorResponse get error response from code

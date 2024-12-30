@@ -13,12 +13,13 @@ func ToProjectModel(project *entity.ProjectEntity) *model.ProjectModel {
 		BaseModel: model.BaseModel{
 			ID: project.ID,
 		},
-		Name:          project.Name,
-		FullName:      project.FullName,
-		Private:       project.Private,
-		OwnerID:       project.OwnerID,
-		Description:   project.Description,
-		IntegrationId: project.IntegrationId,
+		Name:                project.Name,
+		FullName:            project.FullName,
+		Private:             project.Private,
+		OwnerID:             project.OwnerID,
+		Description:         project.Description,
+		IntegrationId:       project.IntegrationId,
+		ThirdPartyProjectID: project.ThirdPartyProjectID,
 	}
 }
 func ToProjectEntity(project *model.ProjectModel) *entity.ProjectEntity {
@@ -31,12 +32,13 @@ func ToProjectEntity(project *model.ProjectModel) *entity.ProjectEntity {
 			CreatedAt: project.CreatedAt.Unix(),
 			UpdatedAt: project.UpdatedAt.Unix(),
 		},
-		Name:          project.Name,
-		FullName:      project.FullName,
-		Private:       project.Private,
-		OwnerID:       project.OwnerID,
-		Description:   project.Description,
-		IntegrationId: project.IntegrationId,
+		Name:                project.Name,
+		FullName:            project.FullName,
+		Private:             project.Private,
+		OwnerID:             project.OwnerID,
+		Description:         project.Description,
+		IntegrationId:       project.IntegrationId,
+		ThirdPartyProjectID: project.ThirdPartyProjectID,
 	}
 }
 

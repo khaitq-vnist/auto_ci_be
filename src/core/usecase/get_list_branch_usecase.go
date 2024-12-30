@@ -31,7 +31,7 @@ func (g GetBranchUseCase) GetListBranches(ctx context.Context, userId, projectId
 		return nil, err
 	}
 
-	decryptToken, err := g.encryptUseCase.DecryptToken(&ctx, integration.AccessToken)
+	decryptToken, err := g.encryptUseCase.DecryptToken(ctx, integration.AccessToken)
 	if err != nil {
 		log.Error(ctx, "Decrypt token failed", err)
 		return nil, err

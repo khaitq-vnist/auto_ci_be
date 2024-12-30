@@ -28,7 +28,7 @@ type BuddyServiceRequest struct {
 type BuddyServiceConnectionRequest struct {
 	Host     string `json:"host"`
 	DB       string `json:"db"`
-	Port     int    `json:"port"`
+	Port     string `json:"port"`
 	User     string `json:"user"`
 	Password string `json:"password"`
 }

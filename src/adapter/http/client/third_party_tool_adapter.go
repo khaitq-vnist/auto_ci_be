@@ -10,6 +10,7 @@ import (
 	"github.com/khaitq-vnist/auto_ci_be/adapter/http/client/dto/response"
 	"github.com/khaitq-vnist/auto_ci_be/adapter/properties"
 	"github.com/khaitq-vnist/auto_ci_be/core/entity"
+	"github.com/khaitq-vnist/auto_ci_be/core/entity/dto/request"
 	response2 "github.com/khaitq-vnist/auto_ci_be/core/entity/dto/response"
 	"github.com/khaitq-vnist/auto_ci_be/core/port"
 )
@@ -23,11 +24,33 @@ var (
 	DeletePipelinePath    = "/workspaces/%s/projects/%s/pipelines/%d"
 	GetExecutionLog       = "/workspaces/%s/projects/%s/pipelines/%d/executions/%d/action/%d"
 	CreateIntegrationPath = "/workspaces/%s/integrations"
+	CreateProjectPath     = "/workspaces/%s/projects"
 )
 
 type ThirdPartyToolAdapter struct {
 	httpClient client.ContextualHttpClient
 	props      *properties.BuddyProperties
+}
+
+func (t ThirdPartyToolAdapter) CreateProject(ctx context.Context, projectDto *request.ThirdPartyCreateProjectRequest) (*response2.ThirdPartyCreateProjectResponse, error) {
+	httpClient := resty.New()
+	requestBody := request2.ToBuddyCreateProjectRequest(projectDto)
+	var resp response.BuddyCreateProjectResponse
+	rsp, err := httpClient.R().
+		SetContext(ctx).
+		SetHeader("Authorization", "Bearer "+t.props.AccessToken).
+		SetBody(requestBody).
+		SetResult(&resp).
+		Post(t.props.BaseUrl + fmt.Sprintf(CreateProjectPath, t.props.Workspace))
+	if err != nil {
+		log.Error(ctx, "Error when creating project:", err)
+		return nil, err
+	}
+	if rsp.StatusCode() != 201 {
+		log.Error(ctx, "Create project failed with status:", rsp.StatusCode())
+		return nil, fmt.Errorf("failed to create project, status code: %d", rsp.StatusCode())
+	}
+	return response.ToThirdPartyCreateProjectResponse(&resp), nil
 }
 
 func (t ThirdPartyToolAdapter) CreateIntegration(ctx context.Context, integration *entity.IntegrationEntity) (*response2.ThirdPartyCreateIntegrationResponse, error) {

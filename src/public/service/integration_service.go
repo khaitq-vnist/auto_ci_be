@@ -24,7 +24,7 @@ func (i *IntegrationService) GetIntegrationByUserId(c context.Context, userId in
 func (i *IntegrationService) CreateIntegration(c context.Context, userID int64, request *request.CreateIntegrationRequest) error {
 	integrationEntity := request.ToEntity()
 	integrationEntity.UserId = userID
-	_, err := i.createIntegrationUseCase.CreateIntegration(&c, integrationEntity)
+	_, err := i.createIntegrationUseCase.CreateIntegration(c, integrationEntity)
 	return err
 }
 

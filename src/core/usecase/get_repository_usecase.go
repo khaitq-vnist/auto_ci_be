@@ -8,7 +8,7 @@ import (
 
 type IGetRepositoryUseCase interface {
 	GetReposByIntegrationId(ctx context.Context, integrationId, userId int64) ([]*response.ThirdPartyProviderReposResponse, error)
-	GetRepositoryInfo(ctx context.Context, integrationId, repoId int64) (*response.ThirdPartyProviderReposResponse, error)
+	GetRepositoryInfo(ctx context.Context, integrationId, repoId, userID int64) (*response.ThirdPartyProviderReposResponse, error)
 }
 
 type GetRepositoryUseCase struct {
@@ -17,15 +17,15 @@ type GetRepositoryUseCase struct {
 	encryptUseCase        IEncryptUseCase
 }
 
-func (g GetRepositoryUseCase) GetRepositoryInfo(ctx context.Context, integrationId, repoId int64) (*response.ThirdPartyProviderReposResponse, error) {
-	integration, err := g.getIntegrationUseCase.GetIntegrationByIdAndUserId(ctx, integrationId, 1)
+func (g GetRepositoryUseCase) GetRepositoryInfo(ctx context.Context, integrationId, repoId, userID int64) (*response.ThirdPartyProviderReposResponse, error) {
+	integration, err := g.getIntegrationUseCase.GetIntegrationByIdAndUserId(ctx, integrationId, userID)
 	if err != nil {
 		return nil, err
 	}
 	if integration.ProviderName == "GitHub" {
 		integration.ProviderName = "GITHUB"
 	}
-	decryptToken, err := g.encryptUseCase.DecryptToken(&ctx, integration.AccessToken)
+	decryptToken, err := g.encryptUseCase.DecryptToken(ctx, integration.AccessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +40,7 @@ func (g GetRepositoryUseCase) GetReposByIntegrationId(ctx context.Context, integ
 	if integration.ProviderName == "GitHub" {
 		integration.ProviderName = "GITHUB"
 	}
-	decryptToken, err := g.encryptUseCase.DecryptToken(&ctx, integration.AccessToken)
+	decryptToken, err := g.encryptUseCase.DecryptToken(ctx, integration.AccessToken)
 	if err != nil {
 		return nil, err
 	}

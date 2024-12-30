@@ -43,7 +43,12 @@ func (i IntegrationController) CreateIntegration(c *gin.Context) {
 	apihelper.SuccessfulHandle(c, nil)
 }
 func (i IntegrationController) GetIntegration(c *gin.Context) {
-	userId := int64(1)
+	userId, err := middleware.GetUserID(c)
+	if err != nil {
+		log.Error(c, "get user id error: %v", err)
+		apihelper.AbortErrorHandle(c, common.GeneralUnauthorized)
+		return
+	}
 	integrations, err := i.integrationService.GetIntegrationByUserId(c, userId)
 	if err != nil {
 		log.Error(c, "get integration error: %v", err)

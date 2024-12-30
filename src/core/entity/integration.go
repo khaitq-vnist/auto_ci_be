@@ -10,4 +10,6 @@ type IntegrationEntity struct {
 	AccessToken      string
 	ProviderUsername string
 	ThirdPartyHashId string
+	Scope            string
+	Type             string
 }

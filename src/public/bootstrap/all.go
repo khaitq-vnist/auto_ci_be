@@ -1,6 +1,7 @@
 package bootstrap
 
 import (
+	"github.com/go-resty/resty/v2"
 	"github.com/golibs-starter/golib"
 	golibdata "github.com/golibs-starter/golib-data"
 	golibgin "github.com/golibs-starter/golib-gin"
@@ -65,6 +66,7 @@ func All() fx.Option {
 		fx.Provide(postgres.NewVariableTemplateRepoAdapter),
 		fx.Provide(publisher.NewEventPublisherAdapter),
 		fx.Provide(postgres.NewDatabaseTransactionAdapter),
+		fx.Provide(postgres.NewServiceRepositoryAdapter),
 
 		//Provide client's implements
 		fx.Provide(client.NewGithubProviderClient),
@@ -93,6 +95,7 @@ func All() fx.Option {
 		fx.Provide(usecase.NewGetUserUseCase),
 		fx.Provide(usecase.NewDatabaseTransactionUsecase),
 		fx.Provide(usecase.NewLoginUseCase),
+		fx.Provide(usecase.NewGetServiceUseCase),
 
 		//Provide service
 		fx.Provide(service.NewIntegrationService),
@@ -101,6 +104,7 @@ func All() fx.Option {
 		fx.Provide(service.NewPipelineService),
 		fx.Provide(service.NewWebhookService),
 		fx.Provide(service.NewUserService),
+		fx.Provide(service.NewServiceService),
 
 		//Provide controller
 		fx.Provide(controller.NewIntegrationController),
@@ -109,7 +113,12 @@ func All() fx.Option {
 		fx.Provide(controller.NewPipelineController),
 		fx.Provide(controller.NewWebHookController),
 		fx.Provide(controller.NewUserController),
-
+		fx.Provide(
+			func() *resty.Client {
+				return resty.New()
+			},
+		),
+		fx.Provide(controller.NewServiceController),
 		// Provide gin http server auto config,
 		// actuator endpoints and application routers
 		golibgin.GinHttpServerOpt(),

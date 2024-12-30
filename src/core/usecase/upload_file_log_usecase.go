@@ -26,8 +26,8 @@ func (u UploadFileLogUseCase) UploadFileLogByExecutionID(ctx context.Context, pr
 		log.Error(ctx, "GetProjectById", err)
 		return err
 	}
-	project.Name = "demo-ci-cd"
-	execution, err := u.thirdPartyToolPort.GetExecutionDetail(ctx, project.Name, pipelineID, executionID)
+
+	execution, err := u.thirdPartyToolPort.GetExecutionDetail(ctx, project.ThirdPartyProjectID, pipelineID, executionID)
 	if err != nil {
 		log.Error(ctx, "GetExecutionDetail error", err)
 		return err
@@ -65,7 +65,7 @@ func (u UploadFileLogUseCase) UploadFileLogByExecutionID(ctx context.Context, pr
 		}
 	}()
 	for _, action := range execution.ActionExecutions {
-		detailLog, err := u.thirdPartyToolPort.GetDetailLog(ctx, project.Name, pipelineID, executionID, int64(action.Action.ID))
+		detailLog, err := u.thirdPartyToolPort.GetDetailLog(ctx, project.ThirdPartyProjectID, pipelineID, executionID, int64(action.Action.ID))
 		if err != nil {
 			log.Error(ctx, "GetDetailLog error", err)
 			return err

@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"github.com/golibs-starter/golib/log"
+	"github.com/khaitq-vnist/auto_ci_be/core/constant"
 	"github.com/khaitq-vnist/auto_ci_be/core/entity"
 	"github.com/khaitq-vnist/auto_ci_be/core/port"
 )
@@ -33,6 +34,12 @@ func (c *CreateIntegrationUseCase) CreateIntegration(ctx context.Context, integr
 		log.Error(ctx, "User info not found", nil)
 		return nil, err
 	}
+	var providerType string
+	if provider.Code == constant.GITHUB_PROVIDER {
+		providerType = constant.GITHUB_INTEGRATION
+	}
+	integrationEntity.Type = providerType
+	integrationEntity.Scope = constant.WORKSPACE_SCOPE
 	thirdPartyIntegration, err := c.thirdPartyToolPort.CreateIntegration(ctx, integrationEntity)
 
 	if err != nil {
@@ -51,6 +58,7 @@ func (c *CreateIntegrationUseCase) CreateIntegration(ctx context.Context, integr
 	integrationEntity.ProviderName = provider.Code
 	integrationEntity.ProviderId = provider.ID
 	integrationEntity.ProviderUsername = userInfo.Username
+	integrationEntity.ProviderCode = provider.Code
 
 	integrationEntity, err = c.integrationPort.SaveIntegration(ctx, integrationEntity)
 	if err != nil {
@@ -63,14 +71,12 @@ func (c *CreateIntegrationUseCase) CreateIntegration(ctx context.Context, integr
 
 }
 
-func NewCreateIntegrationUseCase(encryptUseCase IEncryptUseCase,
-	getThirdPartyProviderUseCase IGetThirdPartyProviderUseCase,
-	getProviderUseCase IGetProviderUseCase,
-	integrationPort port.IIntegrationPort) ICreateIntegrationUseCase {
+func NewCreateIntegrationUseCase(encryptUseCase IEncryptUseCase, getThirdPartyProviderUseCase IGetThirdPartyProviderUseCase, getProviderUseCase IGetProviderUseCase, integrationPort port.IIntegrationPort, thirdPartyToolPort port.IThirdPartyToolPort) ICreateIntegrationUseCase {
 	return &CreateIntegrationUseCase{
 		encryptUseCase:               encryptUseCase,
 		getThirdPartyProviderUseCase: getThirdPartyProviderUseCase,
 		getProviderUseCase:           getProviderUseCase,
 		integrationPort:              integrationPort,
+		thirdPartyToolPort:           thirdPartyToolPort,
 	}
 }

@@ -1,7 +1,6 @@
 package request
 
 import (
-	"github.com/khaitq-vnist/auto_ci_be/core/constant"
 	"github.com/khaitq-vnist/auto_ci_be/core/entity"
 )
 
@@ -15,8 +14,8 @@ type BuddyCreateIntegrationRequest struct {
 func ToBuddyCreateIntegrationRequest(integration *entity.IntegrationEntity) *BuddyCreateIntegrationRequest {
 	return &BuddyCreateIntegrationRequest{
 		Name:  integration.Name,
-		Type:  constant.GITHUB_INTEGRATION,
-		Scope: constant.WORKSPACE_SCOPE,
+		Type:  integration.Type,
+		Scope: integration.Scope,
 		Token: integration.AccessToken,
 	}
 }
