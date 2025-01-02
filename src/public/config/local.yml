@@ -54,5 +54,8 @@ app:
         jwt:
           PrivateKey: ${JWT_PRIVATE_KEY}
           TokenExpired: 86400
+    sonar:
+        BaseUrl: https://sonar.auto-ci.site
+        AccessToken: ${SONAR_ACCESS_TOKEN}
 
 

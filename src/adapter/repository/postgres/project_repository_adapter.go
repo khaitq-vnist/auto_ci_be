@@ -12,6 +12,17 @@ type ProjectRepositoryAdapter struct {
 	*BaseRepository
 }
 
+func (p ProjectRepositoryAdapter) CountAllProjectByUserId(ctx context.Context, userId int64) (int64, error) {
+	var count int64
+	if err := p.db.WithContext(ctx).Model(&model.ProjectModel{}).Where("owner_id = ?", userId).Count(&count).Error; err != nil {
+		if err.Error() == "record not found" {
+			return 0, nil
+		}
+		return 0, err
+	}
+	return count, nil
+}
+
 func (p ProjectRepositoryAdapter) GetProjectById(ctx context.Context, projectId int64) (*entity.ProjectEntity, error) {
 	var projectModel model.ProjectModel
 	if err := p.db.WithContext(ctx).Model(&model.ProjectModel{}).Where("id = ?", projectId).First(&projectModel).Error; err != nil {

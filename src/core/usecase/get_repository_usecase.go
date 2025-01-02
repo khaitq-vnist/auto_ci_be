@@ -33,7 +33,7 @@ func (g GetRepositoryUseCase) GetRepositoryInfo(ctx context.Context, integration
 }
 
 func (g GetRepositoryUseCase) GetReposByIntegrationId(ctx context.Context, integrationId, userId int64) ([]*response.ThirdPartyProviderReposResponse, error) {
-	integration, err := g.getIntegrationUseCase.GetIntegrationByIdAndUserId(ctx, integrationId, 1)
+	integration, err := g.getIntegrationUseCase.GetIntegrationByIdAndUserId(ctx, integrationId, userId)
 	if err != nil {
 		return nil, err
 	}

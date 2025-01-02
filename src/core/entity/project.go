@@ -14,4 +14,7 @@ type ProjectEntity struct {
 	HtmlUrl             string
 	IntegrationId       int64
 	ThirdPartyProjectID string
+	SonarKey            string
+	SonarProjectName    string
+	SonarToken          string
 }

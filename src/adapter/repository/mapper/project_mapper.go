@@ -20,6 +20,9 @@ func ToProjectModel(project *entity.ProjectEntity) *model.ProjectModel {
 		Description:         project.Description,
 		IntegrationId:       project.IntegrationId,
 		ThirdPartyProjectID: project.ThirdPartyProjectID,
+		SonarProjectName:    project.SonarProjectName,
+		SonarKey:            project.SonarKey,
+		SonarToken:          project.SonarToken,
 	}
 }
 func ToProjectEntity(project *model.ProjectModel) *entity.ProjectEntity {
@@ -39,6 +42,9 @@ func ToProjectEntity(project *model.ProjectModel) *entity.ProjectEntity {
 		Description:         project.Description,
 		IntegrationId:       project.IntegrationId,
 		ThirdPartyProjectID: project.ThirdPartyProjectID,
+		SonarProjectName:    project.SonarProjectName,
+		SonarKey:            project.SonarKey,
+		SonarToken:          project.SonarToken,
 	}
 }
 

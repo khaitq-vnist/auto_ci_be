@@ -16,6 +16,12 @@ type PipelineController struct {
 }
 
 func (p PipelineController) CreatePipeline(c *gin.Context) {
+	projectID, err := strconv.ParseInt(c.Param("projectId"), 10, 64)
+	if err != nil {
+		log.Error(c, "parse projectID error", err)
+		apihelper.AbortErrorHandle(c, common.GeneralBadRequest)
+		return
+	}
 	var req request.CreatePipelineRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		log.Errorc(c, "bind request error: %v", err)
@@ -23,7 +29,7 @@ func (p PipelineController) CreatePipeline(c *gin.Context) {
 		return
 	}
 
-	result, err := p.pipelineService.CreateNewPipeline(c, 1, request.ToPipelineEntity(&req))
+	result, err := p.pipelineService.CreateNewPipeline(c, projectID, request.ToPipelineEntity(&req))
 	if err != nil {
 		log.Errorc(c, "create pipeline error: %v", err)
 		apihelper.AbortErrorHandle(c, common.GeneralServiceUnavailable)
@@ -135,6 +141,39 @@ func (p PipelineController) DeletePipeline(c *gin.Context) {
 		return
 	}
 	apihelper.SuccessfulHandle(c, nil)
+}
+func (p PipelineController) GetDetailLog(c *gin.Context) {
+	projectID, err := strconv.ParseInt(c.Param("projectId"), 10, 64)
+	if err != nil {
+		log.Error(c, "parse projectID error", err)
+		apihelper.AbortErrorHandle(c, common.GeneralBadRequest)
+		return
+	}
+	pipelineID, err := strconv.ParseInt(c.Param("pipelineId"), 10, 64)
+	if err != nil {
+		log.Error(c, "parse pipelineID error", err)
+		apihelper.AbortErrorHandle(c, common.GeneralBadRequest)
+		return
+	}
+	executionID, err := strconv.ParseInt(c.Param("executionId"), 10, 64)
+	if err != nil {
+		log.Error(c, "parse executionID error", err)
+		apihelper.AbortErrorHandle(c, common.GeneralBadRequest)
+		return
+	}
+	actionID, err := strconv.ParseInt(c.Param("actionId"), 10, 64)
+	if err != nil {
+		log.Error(c, "parse actionID error", err)
+		apihelper.AbortErrorHandle(c, common.GeneralBadRequest)
+		return
+	}
+	rsp, err := p.pipelineService.GetDetailLog(c, projectID, pipelineID, executionID, actionID)
+	if err != nil {
+		log.Error(c, "get detail log error", err)
+		apihelper.AbortErrorHandle(c, common.GeneralServiceUnavailable)
+		return
+	}
+	apihelper.SuccessfulHandle(c, rsp)
 }
 func NewPipelineController(pipelineService service.IPipelineService) *PipelineController {
 	return &PipelineController{

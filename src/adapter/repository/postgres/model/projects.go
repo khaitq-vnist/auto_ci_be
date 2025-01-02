@@ -12,6 +12,9 @@ type ProjectModel struct {
 	ProviderRepoID      int64   `gorm:"column:provider_repo_id"`
 	IntegrationId       int64   `gorm:"column:integration_id"`
 	ThirdPartyProjectID string  `gorm:"column:third_party_project_id"`
+	SonarKey            string  `gorm:"column:sonar_key"`
+	SonarProjectName    string  `gorm:"column:sonar_project_name"`
+	SonarToken          string  `gorm:"column:sonar_token"`
 }
 
 func (p ProjectModel) TableName() string {

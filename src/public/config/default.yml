@@ -7,13 +7,20 @@ app:
         - /actuator/health
         - /actuator/info
         - /v1/repositories/*
-        - /v1/projects
-        - /v1/projects/*
         - /v1/pipelines
+        - /v1/pipelines/*
         - /v1/webhooks/*
         - /v1/auth/*
         - /v1/services/*
         - /v1/services
+        - /v1/projects
+        - /v1/projects/*
+        - /v1/integrations
+        - /v1/integrations/*
+        - /v1/dashboard
+        - /v1/dashboard/*
       protectedUrls:
-        - { urlPattern: "/v1/integrations", method: POST,roles: [ "MOBILE_APP" ], unauthorizedWwwAuthenticateHeaders: [ "Bearer" ] }
-        - { urlPattern: "/v1/integrations", method: GET,roles: [ "MOBILE_APP" ], unauthorizedWwwAuthenticateHeaders: [ "Bearer" ] }
+#        - { urlPattern: "/v1/integrations", method: POST,roles: [ "MOBILE_APP" ], unauthorizedWwwAuthenticateHeaders: [ "Bearer" ] }
+#        - { urlPattern: "/v1/integrations", method: GET,roles: [ "MOBILE_APP" ], unauthorizedWwwAuthenticateHeaders: [ "Bearer" ] }
+#        - { urlPattern: "/v1/projects/*", method: GET,roles: [ "MOBILE_APP" ], unauthorizedWwwAuthenticateHeaders: [ "Bearer" ] }
+#        - { urlPattern: "/v1/projects/*", method: OPTIONS,roles: [ "MOBILE_APP" ], unauthorizedWwwAuthenticateHeaders: [ "Bearer" ] }

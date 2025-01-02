@@ -31,6 +31,16 @@ func (c CreatePipelineUsecase) CreateNewPipeline(ctx context.Context, projectID 
 	}
 	actions := pipeline.Actions
 	for _, action := range actions {
+		if len(action.ExecuteCommands) > 0 && action.ExecuteCommands[0] == "mvn clean verify" {
+			action.ExecuteCommands = append(action.ExecuteCommands,
+				"mvn sonar:sonar "+
+					"-Dsonar.projectKey="+project.SonarKey+" "+
+					"-Dsonar.projectName="+project.SonarProjectName+" "+
+					"-Dsonar.host.url=https://sonar.auto-ci.site "+
+					"-Dsonar.token="+project.SonarToken,
+			)
+
+		}
 		_, err := c.thirdPartyToolPort.CreateNewAction(ctx, project.ThirdPartyProjectID, newPipeline.ID, action)
 		if err != nil {
 			log.Error(ctx, "Error when create new action", err)

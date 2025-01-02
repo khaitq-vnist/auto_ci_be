@@ -12,6 +12,17 @@ type IntegrationRepositoryAdapter struct {
 	*BaseRepository
 }
 
+func (i *IntegrationRepositoryAdapter) CountAllIntegrationByUserId(ctx context.Context, userId int64) (int64, error) {
+	var count int64
+	if err := i.db.WithContext(ctx).Model(&model.IntegrationModel{}).Where("user_id = ?", userId).Count(&count).Error; err != nil {
+		if err.Error() == "record not found" {
+			return 0, nil
+		}
+		return 0, err
+	}
+	return count, nil
+}
+
 func (i *IntegrationRepositoryAdapter) GetIntegrationByIdAndUserId(ctx context.Context, integrationId, userId int64) (*entity.IntegrationEntity, error) {
 	var integrationModel model.IntegrationModel
 	if err := i.db.WithContext(ctx).Model(&model.IntegrationModel{}).Where("id = ? AND user_id = ?", integrationId, userId).First(&integrationModel).Error; err != nil {

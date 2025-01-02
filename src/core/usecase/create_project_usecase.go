@@ -16,6 +16,7 @@ type CreateProjectUseCase struct {
 	projectPort           port.IProjectPort
 	getIntegrationUseCase IGetIntegrationUseCase
 	thirdPartyToolPort    port.IThirdPartyToolPort
+	qualityGatePort       port.IQualityGatePort
 }
 
 func (c CreateProjectUseCase) CreateProject(ctx context.Context, userId, integrationId, repoId int64) (*entity.ProjectEntity, error) {
@@ -40,6 +41,16 @@ func (c CreateProjectUseCase) CreateProject(ctx context.Context, userId, integra
 		log.Error(ctx, "create project error: %v", err)
 		return nil, err
 	}
+	sonarProject, err := c.qualityGatePort.CreateNewProject(ctx, thirdPartyCreateProjectRsp.Name, thirdPartyCreateProjectRsp.Name)
+	if err != nil {
+		log.Error(ctx, "create sonar project error: %v", err)
+		return nil, err
+	}
+	sonarToken, err := c.qualityGatePort.GetAccessToken(ctx, thirdPartyCreateProjectRsp.Name, sonarProject.Key)
+	if err != nil {
+		log.Error(ctx, "get sonar token error: %v", err)
+		return nil, err
+	}
 	project := &entity.ProjectEntity{
 		Name:                repo.Name,
 		FullName:            repo.FullName,
@@ -51,15 +62,19 @@ func (c CreateProjectUseCase) CreateProject(ctx context.Context, userId, integra
 		HtmlUrl:             repo.HtmlUrl,
 		ThirdPartyProjectID: thirdPartyCreateProjectRsp.Name,
 		IntegrationId:       integrationId,
+		SonarProjectName:    sonarProject.Name,
+		SonarKey:            sonarProject.Key,
+		SonarToken:          sonarToken,
 	}
 	return c.projectPort.SaveProject(ctx, project)
 }
 
-func NewCreateProjectUseCase(getRepositoryUseCase IGetRepositoryUseCase, projectPort port.IProjectPort, getIntegrationUseCase IGetIntegrationUseCase, thirdPartyToolPort port.IThirdPartyToolPort) ICreateProjectUseCase {
+func NewCreateProjectUseCase(getRepositoryUseCase IGetRepositoryUseCase, projectPort port.IProjectPort, getIntegrationUseCase IGetIntegrationUseCase, thirdPartyToolPort port.IThirdPartyToolPort, qualityGatePort port.IQualityGatePort) ICreateProjectUseCase {
 	return &CreateProjectUseCase{
 		getRepositoryUseCase:  getRepositoryUseCase,
 		projectPort:           projectPort,
 		getIntegrationUseCase: getIntegrationUseCase,
 		thirdPartyToolPort:    thirdPartyToolPort,
+		qualityGatePort:       qualityGatePort,
 	}
 }

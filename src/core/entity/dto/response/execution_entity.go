@@ -16,6 +16,8 @@ type ExecutionResponse struct {
 	TriggeredOn      string                   `json:"triggered_on"`
 	Branch           *ExecutionBranchResponse `json:"branch"`
 	ActionExecutions []*ActionExecution       `json:"action_executions,omitempty"`
+	LogsFile         []string                 `json:"logs_file,omitempty"`
+	Coverage         float64                  `json:"coverage,omitempty"`
 }
 type DetailActionLog struct {
 	Status     string   `json:"status"`

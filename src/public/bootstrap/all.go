@@ -49,6 +49,7 @@ func All() fx.Option {
 		golib.ProvideProps(properties.NewGithubProperties),
 		golib.ProvideProps(properties2.NewEncryptProperties),
 		golib.ProvideProps(properties.NewBuddyProperties),
+		golib.ProvideProps(properties.NewSonarProperties),
 
 		//Provide core properties
 		golib.ProvideProps(properties2.NewTokenProperties),
@@ -67,6 +68,8 @@ func All() fx.Option {
 		fx.Provide(publisher.NewEventPublisherAdapter),
 		fx.Provide(postgres.NewDatabaseTransactionAdapter),
 		fx.Provide(postgres.NewServiceRepositoryAdapter),
+		fx.Provide(client.NewSonarClientAdapter),
+		fx.Provide(postgres.NewExecutionHistoryRepositoryAdapter),
 
 		//Provide client's implements
 		fx.Provide(client.NewGithubProviderClient),
@@ -96,6 +99,8 @@ func All() fx.Option {
 		fx.Provide(usecase.NewDatabaseTransactionUsecase),
 		fx.Provide(usecase.NewLoginUseCase),
 		fx.Provide(usecase.NewGetServiceUseCase),
+		fx.Provide(usecase.NewGetDetailLogUseCase),
+		fx.Provide(usecase.NewGetDashboardUsecase),
 
 		//Provide service
 		fx.Provide(service.NewIntegrationService),
@@ -105,6 +110,7 @@ func All() fx.Option {
 		fx.Provide(service.NewWebhookService),
 		fx.Provide(service.NewUserService),
 		fx.Provide(service.NewServiceService),
+		fx.Provide(service.NewDashboardService),
 
 		//Provide controller
 		fx.Provide(controller.NewIntegrationController),
@@ -119,6 +125,7 @@ func All() fx.Option {
 			},
 		),
 		fx.Provide(controller.NewServiceController),
+		fx.Provide(controller.NewDashboardController),
 		// Provide gin http server auto config,
 		// actuator endpoints and application routers
 		golibgin.GinHttpServerOpt(),

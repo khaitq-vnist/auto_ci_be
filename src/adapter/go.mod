@@ -9,6 +9,7 @@ require (
 	github.com/go-resty/resty/v2 v2.16.2
 	github.com/golibs-starter/golib v1.0.1
 	github.com/khaitq-vnist/auto_ci_be/core v0.0.0-00010101000000-000000000000
+	github.com/lib/pq v1.10.9
 	google.golang.org/api v0.122.0
 	gorm.io/datatypes v1.2.5
 	gorm.io/gorm v1.25.12

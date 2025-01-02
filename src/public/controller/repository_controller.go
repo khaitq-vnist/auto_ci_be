@@ -5,6 +5,7 @@ import (
 	"github.com/golibs-starter/golib/log"
 	"github.com/khaitq-vnist/auto_ci_be/core/common"
 	"github.com/khaitq-vnist/auto_ci_be/public/apihelper"
+	"github.com/khaitq-vnist/auto_ci_be/public/middleware"
 	"github.com/khaitq-vnist/auto_ci_be/public/resource/response"
 	"github.com/khaitq-vnist/auto_ci_be/public/service"
 	"strconv"
@@ -25,7 +26,12 @@ func (r RepositoryController) GetRepositoriesByIntegrationId(c *gin.Context) {
 		return
 	}
 
-	userId := int64(1)
+	userId, err := middleware.GetUserID(c)
+	if err != nil {
+		log.Error(c, "get user id error: %v", err)
+		apihelper.AbortErrorHandle(c, common.GeneralUnauthorized)
+		return
+	}
 	result, err := r.repoService.GetRepositoriesByIntegrationId(c, integrationId, userId)
 	if err != nil {
 		log.Error(c, "get repositories error: %v", err)

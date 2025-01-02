@@ -129,7 +129,7 @@ func (t ThirdPartyToolAdapter) RunExecution(ctx context.Context, project string,
 		log.Error(ctx, "Error when running execution:", err)
 		return nil, err
 	}
-	if rsp.StatusCode() != 201 {
+	if rsp.StatusCode() != 200 {
 		log.Error(ctx, "Run execution failed with status:", rsp.StatusCode())
 	}
 	return response.ToExecutionDetail(&resp), nil
