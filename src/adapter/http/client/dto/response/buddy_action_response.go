@@ -50,7 +50,7 @@ func ToActionEntity(buddyRsp *BuddyCreateActionResponse) *entity.ActionEntity {
 			Connection: entity.ServiceConnectionEntity{
 				Host:     service.Connection.Host,
 				DB:       service.Connection.DB,
-				Port:     service.Connection.Port,
+				Port:     string(rune(service.Connection.Port)),
 				User:     service.Connection.User,
 				Password: service.Connection.Password,
 			},

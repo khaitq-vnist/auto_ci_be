@@ -47,16 +47,20 @@ type BuddyAction struct {
 func ToListExecutionResponse(rsp *BuddyListExecutionResponse) *response.ThirdPartyListExecutionResponse {
 	executions := make([]*response.ExecutionResponse, 0)
 	for _, execution := range rsp.Executions {
+		var branch *response.ExecutionBranchResponse
+		if execution.Branch != nil {
+			branch = &response.ExecutionBranchResponse{
+				Name:    execution.Branch.Name,
+				Default: execution.Branch.Default,
+			}
+		}
 		executions = append(executions, &response.ExecutionResponse{
 			ID:          execution.ID,
 			StartDate:   execution.StartDate.Unix(),
 			FinishDate:  execution.FinishDate.Unix(),
 			Status:      execution.Status,
 			TriggeredOn: execution.TriggeredOn,
-			Branch: &response.ExecutionBranchResponse{
-				Name:    execution.Branch.Name,
-				Default: execution.Branch.Default,
-			},
+			Branch:      branch,
 		})
 	}
 	return &response.ThirdPartyListExecutionResponse{
@@ -85,16 +89,20 @@ func ToExecutionDetail(rsp *BuddyExecutionResponse) *response.ExecutionResponse 
 			},
 		})
 	}
-	return &response.ExecutionResponse{
-		ID:          rsp.ID,
-		StartDate:   rsp.StartDate.Unix(),
-		FinishDate:  rsp.FinishDate.Unix(),
-		Status:      rsp.Status,
-		TriggeredOn: rsp.TriggeredOn,
-		Branch: &response.ExecutionBranchResponse{
+	var branch *response.ExecutionBranchResponse
+	if rsp.Branch != nil {
+		branch = &response.ExecutionBranchResponse{
 			Name:    rsp.Branch.Name,
 			Default: rsp.Branch.Default,
-		},
+		}
+	}
+	return &response.ExecutionResponse{
+		ID:               rsp.ID,
+		StartDate:        rsp.StartDate.Unix(),
+		FinishDate:       rsp.FinishDate.Unix(),
+		Status:           rsp.Status,
+		TriggeredOn:      rsp.TriggeredOn,
+		Branch:           branch,
 		ActionExecutions: actionExecutions,
 	}
 }

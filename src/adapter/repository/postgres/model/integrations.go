@@ -8,6 +8,7 @@ type IntegrationModel struct {
 	ProviderName     string `gorm:"column:provider_name"`
 	AccessToken      string `gorm:"column:access_token"`
 	ProviderUsername string `gorm:"column:provider_username"`
+	ThirdPartyHashId string `gorm:"column:third_party_hash_id"`
 }
 
 func (IntegrationModel) TableName() string {

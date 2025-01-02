@@ -1,0 +1,7 @@
+package constant
+
+const (
+	GITHUB_INTEGRATION = "GIT_HUB"
+	GITLAB_INTEGRATION = "GIT_LAB"
+	WORKSPACE_SCOPE    = "WORKSPACE"
+)

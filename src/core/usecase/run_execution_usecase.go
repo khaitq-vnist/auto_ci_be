@@ -19,8 +19,7 @@ func (r RunExecutionUsecase) RunExecution(ctx context.Context, projectId, pipeli
 	if err != nil {
 		return nil, err
 	}
-	project.Name = "demo-ci-cd"
-	return r.thirdPartyToolPort.RunExecution(ctx, project.Name, pipelineID)
+	return r.thirdPartyToolPort.RunExecution(ctx, project.ThirdPartyProjectID, pipelineID)
 }
 
 func NewRunExecutionUsecase(getProjectUseCase IGetProjectUseCase, thirdPartyToolPort port.IThirdPartyToolPort) IRunExecutionUsecase {

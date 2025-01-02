@@ -1,6 +1,7 @@
 package bootstrap
 
 import (
+	"github.com/go-resty/resty/v2"
 	"github.com/golibs-starter/golib"
 	golibdata "github.com/golibs-starter/golib-data"
 	golibgin "github.com/golibs-starter/golib-gin"
@@ -48,7 +49,10 @@ func All() fx.Option {
 		golib.ProvideProps(properties.NewGithubProperties),
 		golib.ProvideProps(properties2.NewEncryptProperties),
 		golib.ProvideProps(properties.NewBuddyProperties),
+		golib.ProvideProps(properties.NewSonarProperties),
 
+		//Provide core properties
+		golib.ProvideProps(properties2.NewTokenProperties),
 		//Provide port's implements
 		fx.Provide(postgres.NewBaseRepository),
 		fx.Provide(postgres.NewUserRepositoryAdapter),
@@ -62,6 +66,10 @@ func All() fx.Option {
 		fx.Provide(postgres.NewCommandTemplateRepoAdapter),
 		fx.Provide(postgres.NewVariableTemplateRepoAdapter),
 		fx.Provide(publisher.NewEventPublisherAdapter),
+		fx.Provide(postgres.NewDatabaseTransactionAdapter),
+		fx.Provide(postgres.NewServiceRepositoryAdapter),
+		fx.Provide(client.NewSonarClientAdapter),
+		fx.Provide(postgres.NewExecutionHistoryRepositoryAdapter),
 
 		//Provide client's implements
 		fx.Provide(client.NewGithubProviderClient),
@@ -86,6 +94,13 @@ func All() fx.Option {
 		fx.Provide(usecase.NewUploadLogWebhookUseCase),
 		fx.Provide(usecase.NewFireEventUsecase),
 		fx.Provide(usecase.NewDeletePipelineUsecase),
+		fx.Provide(usecase.NewCreateUserUseCase),
+		fx.Provide(usecase.NewGetUserUseCase),
+		fx.Provide(usecase.NewDatabaseTransactionUsecase),
+		fx.Provide(usecase.NewLoginUseCase),
+		fx.Provide(usecase.NewGetServiceUseCase),
+		fx.Provide(usecase.NewGetDetailLogUseCase),
+		fx.Provide(usecase.NewGetDashboardUsecase),
 
 		//Provide service
 		fx.Provide(service.NewIntegrationService),
@@ -93,6 +108,9 @@ func All() fx.Option {
 		fx.Provide(service.NewProjectService),
 		fx.Provide(service.NewPipelineService),
 		fx.Provide(service.NewWebhookService),
+		fx.Provide(service.NewUserService),
+		fx.Provide(service.NewServiceService),
+		fx.Provide(service.NewDashboardService),
 
 		//Provide controller
 		fx.Provide(controller.NewIntegrationController),
@@ -100,7 +118,14 @@ func All() fx.Option {
 		fx.Provide(controller.NewProjectController),
 		fx.Provide(controller.NewPipelineController),
 		fx.Provide(controller.NewWebHookController),
-
+		fx.Provide(controller.NewUserController),
+		fx.Provide(
+			func() *resty.Client {
+				return resty.New()
+			},
+		),
+		fx.Provide(controller.NewServiceController),
+		fx.Provide(controller.NewDashboardController),
 		// Provide gin http server auto config,
 		// actuator endpoints and application routers
 		golibgin.GinHttpServerOpt(),

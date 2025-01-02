@@ -19,15 +19,3 @@ type ActionVariableEntity struct {
 	Key   string
 	Value string
 }
-type ServiceEntity struct {
-	Type       string
-	Version    string
-	Connection ServiceConnectionEntity
-}
-type ServiceConnectionEntity struct {
-	Host     string
-	DB       string
-	Port     int
-	User     string
-	Password string
-}

@@ -13,16 +13,7 @@ app:
     development: true
   security:
     http:
-      jwt.publicKey: |
-        -----BEGIN PUBLIC KEY-----
-        MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAibfYgV1ACadMfuvl5VsR
-        V0H/llbi+zB0f6kTSQ0VwzNR9eYbn8vFUaf3RXA8rxdICtKq8dB23F+2+GICIkjt
-        cHwC1DtcvfxbpOPLYCrZKLntlzRR2UJOzKTq0JP+ea/zydEYIHR9uVIZarw1vz9R
-        LqtiIvZZFUQtDmnc9f7R9kp6XmZgoqg8/hMZ7SF9GvDmdDZSjLCoKrKXHO3a2djn
-        L7FwbiOr8Qx2Zlbm+rzZ3ovIXvskIJqg/S7PFg55Xt8oxL4NxaqzxiEVnZMqEGba
-        pLzetqErEg73L93r7DdnSc4O55qTrRxXMWE+pRx1jWAFdcQL0kZ1TJf/OnNXKKHw
-        aQIDAQAB
-        -----END PUBLIC KEY-----
+      jwt.publicKey: ${JWT_PUBLIC_KEY}
 #  pubsub:
 #    Stub: true
   kafka:
@@ -57,5 +48,14 @@ app:
     buddy:
       BaseUrl: https://api.buddy.works
       AccessToken: ${BUDDY_ACCESS_TOKEN}
+      Workspace: ${BUDDY_WORKSPACE}
+    security:
+      http:
+        jwt:
+          PrivateKey: ${JWT_PRIVATE_KEY}
+          TokenExpired: 86400
+    sonar:
+        BaseUrl: https://sonar.auto-ci.site
+        AccessToken: ${SONAR_ACCESS_TOKEN}
 
 

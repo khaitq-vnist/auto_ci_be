@@ -1,0 +1,2 @@
+ALTER TABLE execution_history
+DROP CONSTRAINT execution_history_pipeline_id_fkey

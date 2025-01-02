@@ -32,7 +32,7 @@ func (a AnalyzeSourceCodeUsecase) Analyze(ctx context.Context, userID, projectId
 		integration.ProviderName = "GITHUB"
 	}
 	project.ProviderUsername = integration.ProviderUsername
-	decryptToken, err := a.encryptUseCase.DecryptToken(&ctx, integration.AccessToken)
+	decryptToken, err := a.encryptUseCase.DecryptToken(ctx, integration.AccessToken)
 	tools, err := a.detectTools(ctx, project, integration.ProviderName, decryptToken, "")
 	if err != nil {
 		log.Error(ctx, "AnalyzeSourceCodeUsecase", "Analyze", err)

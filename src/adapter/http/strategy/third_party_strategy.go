@@ -6,7 +6,7 @@ import (
 )
 
 type IThirdPartyStrategy interface {
-	GetUserInfo(ctx *context.Context, token string) (*response.ThirdPartyProviderUserInfoResponse, error)
+	GetUserInfo(ctx context.Context, token string) (*response.ThirdPartyProviderUserInfoResponse, error)
 	GetListRepositoriesByUser(ctx *context.Context, token string, username string) ([]*response.ThirdPartyProviderReposResponse, error)
 	GetRepositoryInfo(ctx *context.Context, token string, repoId int64) (*response.ThirdPartyProviderReposResponse, error)
 

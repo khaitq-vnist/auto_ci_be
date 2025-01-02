@@ -89,9 +89,9 @@ func (g *GithubProviderClient) GetListRepositoriesByUser(ctx *context.Context, t
 	return response.ToListThirdPartyProviderRepoResponse(repos), nil
 }
 
-func (g *GithubProviderClient) GetUserInfo(ctx *context.Context, token string) (*response2.ThirdPartyProviderUserInfoResponse, error) {
+func (g *GithubProviderClient) GetUserInfo(ctx context.Context, token string) (*response2.ThirdPartyProviderUserInfoResponse, error) {
 	var userInfoResp response.GithubUserInfoResponse
-	rsp, err := g.httpClient.Get(*ctx, g.props.BaseUrl+PathToGetUser, &userInfoResp,
+	rsp, err := g.httpClient.Get(ctx, g.props.BaseUrl+PathToGetUser, &userInfoResp,
 		client.WithHeader("Authorization", "Bearer "+token))
 	if err != nil {
 		log.Error(ctx, "Error when get user info from github", err)

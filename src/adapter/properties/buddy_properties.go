@@ -5,6 +5,7 @@ import "github.com/golibs-starter/golib/config"
 type BuddyProperties struct {
 	BaseUrl     string
 	AccessToken string
+	Workspace   string
 }
 
 func (b BuddyProperties) Prefix() string {

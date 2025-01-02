@@ -42,6 +42,7 @@ func All() fx.Option {
 		golib.ProvideProps(properties2.NewEncryptProperties),
 		golib.ProvideProps(properties.NewBuddyProperties),
 		golib.ProvideProps(properties.NewGCSProperties),
+		golib.ProvideProps(properties.NewSonarProperties),
 
 		//Provide port's implements
 		fx.Provide(postgres.NewBaseRepository),
@@ -51,6 +52,8 @@ func All() fx.Option {
 		fx.Provide(client.NewThirdPartyProviderAdapter),
 		fx.Provide(postgres.NewProjectRepositoryAdapter),
 		fx.Provide(publisher.NewEventPublisherAdapter),
+		fx.Provide(postgres.NewExecutionHistoryRepositoryAdapter),
+		fx.Provide(client.NewSonarClientAdapter),
 
 		fx.Provide(client.NewGithubProviderClient),
 		fx.Provide(client.NewThirdPartyToolAdapter),

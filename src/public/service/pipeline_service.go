@@ -14,6 +14,7 @@ type IPipelineService interface {
 	GetExecutionDetailByID(ctx context.Context, projectID, pipelineID, executionID int64) (*response.ExecutionResponse, error)
 	RunExecution(ctx context.Context, projectID, pipelineID int64) (*response.ExecutionResponse, error)
 	DeletePipelineByID(ctx context.Context, projectID, pipelineID int64) error
+	GetDetailLog(ctx context.Context, projectID, pipelineID, executionID, actionID int64) (*response.DetailActionLog, error)
 }
 type PipelineService struct {
 	createPipelineUsecase usecase.ICreatePipelineUsecase
@@ -21,6 +22,11 @@ type PipelineService struct {
 	getExecutionUsecase   usecase.IGetExecutionUsecase
 	runExecutionUsecase   usecase.IRunExecutionUsecase
 	deletePipelineUsecase usecase.IDeletePipelineUsecase
+	getDetailLogUseCase   usecase.IGetDetailLogUseCase
+}
+
+func (p PipelineService) GetDetailLog(ctx context.Context, projectID, pipelineID, executionID, actionID int64) (*response.DetailActionLog, error) {
+	return p.getDetailLogUseCase.GetDetailLog(ctx, projectID, pipelineID, executionID, actionID)
 }
 
 func (p PipelineService) DeletePipelineByID(ctx context.Context, projectID, pipelineID int64) error {
@@ -47,12 +53,13 @@ func (p PipelineService) CreateNewPipeline(ctx context.Context, projectID int64,
 	return p.createPipelineUsecase.CreateNewPipeline(ctx, projectID, pipeline)
 }
 
-func NewPipelineService(createPipelineUsecase usecase.ICreatePipelineUsecase, getPipelineUseCase usecase.IGetPipelineUseCase, getExecutionUsecase usecase.IGetExecutionUsecase, runExecutionUsecase usecase.IRunExecutionUsecase, deletePipelineUsecase usecase.IDeletePipelineUsecase) IPipelineService {
+func NewPipelineService(createPipelineUsecase usecase.ICreatePipelineUsecase, getPipelineUseCase usecase.IGetPipelineUseCase, getExecutionUsecase usecase.IGetExecutionUsecase, runExecutionUsecase usecase.IRunExecutionUsecase, deletePipelineUsecase usecase.IDeletePipelineUsecase, getDetailLogUseCase usecase.IGetDetailLogUseCase) IPipelineService {
 	return &PipelineService{
 		createPipelineUsecase: createPipelineUsecase,
 		getPipelineUseCase:    getPipelineUseCase,
 		getExecutionUsecase:   getExecutionUsecase,
 		runExecutionUsecase:   runExecutionUsecase,
 		deletePipelineUsecase: deletePipelineUsecase,
+		getDetailLogUseCase:   getDetailLogUseCase,
 	}
 }

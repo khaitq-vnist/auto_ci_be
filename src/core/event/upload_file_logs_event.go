@@ -3,7 +3,7 @@ package event
 import (
 	"context"
 	"github.com/golibs-starter/golib/web/event"
-	"github.com/khaitq-vnist/auto_ci_be/core/constanst"
+	"github.com/khaitq-vnist/auto_ci_be/core/constant"
 	"github.com/khaitq-vnist/auto_ci_be/core/event/message"
 )
 
@@ -14,7 +14,7 @@ type UploadFileLogsEvent struct {
 
 func NewUploadFileLogsEvent(ctx context.Context, eventMessage *message.LogsEventMessage) *UploadFileLogsEvent {
 	return &UploadFileLogsEvent{
-		AbstractEvent: event.NewAbstractEvent(ctx, constanst.UploadFileLogsEvent),
+		AbstractEvent: event.NewAbstractEvent(ctx, constant.UploadFileLogsEvent),
 		PayloadData:   eventMessage,
 	}
 }

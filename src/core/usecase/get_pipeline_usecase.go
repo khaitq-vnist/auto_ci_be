@@ -22,8 +22,8 @@ func (g GetPipelineUseCase) GetListPipelineOfProject(ctx context.Context, projec
 		log.Error(ctx, "Error when get project by id", err)
 		return nil, err
 	}
-	project.Name = "demo-ci-cd"
-	pipelines, err := g.thirdPartyToolPort.GetListPipeline(ctx, project.Name)
+
+	pipelines, err := g.thirdPartyToolPort.GetListPipeline(ctx, project.ThirdPartyProjectID)
 	if err != nil {
 		log.Error(ctx, "Error when get list pipeline", err)
 		return nil, err

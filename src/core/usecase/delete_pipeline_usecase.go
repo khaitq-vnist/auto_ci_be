@@ -20,8 +20,7 @@ func (d DeletePipelineUsecase) DeletePipeline(ctx context.Context, projectID, pi
 		log.Error(ctx, "Error when get project by id", err)
 		return err
 	}
-	project.Name = "demo-ci-cd"
-	err = d.thirdPartyToolPort.DeletePipelineById(ctx, project.Name, pipelineID)
+	err = d.thirdPartyToolPort.DeletePipelineById(ctx, project.ThirdPartyProjectID, pipelineID)
 	if err != nil {
 		log.Error(ctx, "Error when delete pipeline", err)
 		return err

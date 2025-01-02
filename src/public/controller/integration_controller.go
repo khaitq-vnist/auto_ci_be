@@ -5,6 +5,7 @@ import (
 	"github.com/golibs-starter/golib/log"
 	"github.com/khaitq-vnist/auto_ci_be/core/common"
 	"github.com/khaitq-vnist/auto_ci_be/public/apihelper"
+	"github.com/khaitq-vnist/auto_ci_be/public/middleware"
 	"github.com/khaitq-vnist/auto_ci_be/public/resource/request"
 	"github.com/khaitq-vnist/auto_ci_be/public/resource/response"
 	"github.com/khaitq-vnist/auto_ci_be/public/service"
@@ -27,8 +28,13 @@ func (i IntegrationController) CreateIntegration(c *gin.Context) {
 		apihelper.AbortErrorHandle(c, common.GeneralBadRequest)
 		return
 	}
-
-	err := i.integrationService.CreateIntegration(c, &request)
+	userID, err := middleware.GetUserID(c)
+	if err != nil {
+		log.Error(c, "get user id error: %v", err)
+		apihelper.AbortErrorHandle(c, common.GeneralUnauthorized)
+		return
+	}
+	err = i.integrationService.CreateIntegration(c, userID, &request)
 	if err != nil {
 		log.Error(c, "create integration error: %v", err)
 		apihelper.AbortErrorHandle(c, common.GeneralServiceUnavailable)
@@ -37,7 +43,12 @@ func (i IntegrationController) CreateIntegration(c *gin.Context) {
 	apihelper.SuccessfulHandle(c, nil)
 }
 func (i IntegrationController) GetIntegration(c *gin.Context) {
-	userId := int64(1)
+	userId, err := middleware.GetUserID(c)
+	if err != nil {
+		log.Error(c, "get user id error: %v", err)
+		apihelper.AbortErrorHandle(c, common.GeneralUnauthorized)
+		return
+	}
 	integrations, err := i.integrationService.GetIntegrationByUserId(c, userId)
 	if err != nil {
 		log.Error(c, "get integration error: %v", err)

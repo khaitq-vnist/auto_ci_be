@@ -37,7 +37,11 @@ app:
     buddy:
       BaseUrl: https://api.buddy.works
       AccessToken: ${BUDDY_ACCESS_TOKEN}
+      Workspace: ${BUDDY_WORKSPACE}
     gcs:
       ProjectID: "cross-platform-service"
       Bucket: "auto_ci_service"
       CredentialJSON: ${GCS_CREDENTIALS_JSON}
+    sonar:
+      BaseUrl: https://sonar.auto-ci.site
+      AccessToken: ${SONAR_ACCESS_TOKEN}
